@@ -31,21 +31,21 @@
     <div class="account">
     <div class="title">用户登录</div>
     <br />
-        <form class="form-horizontal" method="post" id="loginForm" novalidate>
+        <form class="form-horizontal" method="post" novalidate>
             {% csrf_token %}
             {% for field in form %}
                     <div class="form-group">
                     <label class="col-sm-2 control-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
                     <div class="col-sm-10">
                         {{ field }}
-                        <span class="error-msg"></span>
+                        <span class="error-msg">{{ field.errors.0 }}</span>
                     </div>
                 </div>
             {% endfor %}
 
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
-                    <button type="button" id="btnSubmit" class="btn btn-primary">登录</button>
+                    <button type="submit" class="btn btn-primary">登录</button>
                     </div>
                 </div>
         </form>

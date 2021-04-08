@@ -1,6 +1,34 @@
 {% extends 'layout/base.html' %}
 {% load static %}
 
+{% block js %}
+<script type="text/javascript">
+  $(function(){
+    // 用户注册
+    $('#btnSubmit').click(function (){
+        $('.error-msg').empty();
+       // 获取用户数据，简单校验后发送到后台
+        params = $('#regForm').serialize();
+        $.ajax({
+            url: "{% url 'blog:register' %}",
+            type: 'post',
+            data: params,
+            dataType: 'json'
+          }).done(function (data){
+            if (data.code === 200){
+                location.href = '{% url "blog:login" %}';
+            }else{
+              $.each(data.msg, function (key, value){
+                $('#id_' + key).next().text(value[0])
+              });
+            }
+          }).fail(function (){
+              console.log("网络超时");
+          })
+      });
+  });
+</script>
+{% endblock js %}
 {% block css %}
 
     <link rel="stylesheet" href="{% static 'css/account.css' %}">
