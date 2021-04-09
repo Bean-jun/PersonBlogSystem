@@ -48,6 +48,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'blog.middleware.auth.LoginMiddleware',
 ]
 
 ROOT_URLCONF = 'PersonBlog.urls'
@@ -123,6 +124,8 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
 
+# 管理员账号
+ADMIN_ACCOUNT = []
 
 try:
     from blog_secret_key import *

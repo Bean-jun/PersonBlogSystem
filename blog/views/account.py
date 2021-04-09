@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.http import JsonResponse
 from django.views import View
+from django.conf import settings
 from blog.forms.account import RegisterForm, LoginForm
 from blog.models import UserInfo
 
@@ -22,7 +23,13 @@ class RegisterView(View):
         # 校验数据--数据格式问题--密码的一致性
         if form.is_valid():
             # 保存数据
-            form.instance.is_super = False  # 任何用户注册都是普通用户
+            email = form.cleaned_data['email']
+
+            if email in settings.ADMIN_ACCOUNT:
+                form.instance.is_super = True   # settings中直接设置管理员账号
+            else:
+                form.instance.is_super = False  # 任何用户注册都是普通用户
+            
             form.save()
 
             return JsonResponse({'code': 200})
@@ -59,3 +66,12 @@ class LoginView(View):
                 form.add_error('email', '邮箱或者密码错误')
         
         return render(request, 'login.html', {'form': form})
+
+
+class LogoutView(View):
+    """用户退出"""
+    def get(self, request):
+
+        request.session.flush()
+
+        return redirect(reverse('blog:index'))
