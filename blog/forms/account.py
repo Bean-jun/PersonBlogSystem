@@ -2,15 +2,7 @@ from django import forms
 from django.forms import ValidationError
 from blog.models import UserInfo
 from utils.encrypt import md5
-
-
-class BootStrapForm(object):
-    """创建Bootstrap样式"""
-    def __init__(self, *args, **kwargs):
-        super(BootStrapForm, self).__init__(*args, **kwargs)
-        for name, field in self.fields.items():
-            field.widget.attrs['class'] = 'form-control'
-            field.widget.attrs['placeholder'] = "请输入{}".format(field.label)
+from blog.forms.bootstrap import BootStrapForm
 
 
 class RegisterForm(BootStrapForm, forms.ModelForm):
