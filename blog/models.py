@@ -1,4 +1,5 @@
 from django.db import models
+from ckeditor.fields import RichTextField
 
 
 class UserInfo(models.Model):
@@ -19,7 +20,7 @@ class Note(models.Model):
     """用户笔记表"""
     author = models.ForeignKey('UserInfo', on_delete=models.CASCADE, verbose_name="作者")
     title = models.CharField(max_length=32, verbose_name="标题")
-    content = models.CharField(max_length=256, verbose_name="内容")
+    content = RichTextField(max_length=256, verbose_name="内容")
     create_datetime = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
     modify_datetime = models.DateTimeField(auto_now=True, verbose_name="最后修改时间")
     top_image = models.ImageField(upload_to='note_image/', height_field='', width_field='', verbose_name="笔记快照")
