@@ -1,0 +1,45 @@
+{% extends 'layout/base.html' %}
+{% load static %}
+{% block css %}
+{#    使用markdown必备样式#}
+    <link rel="stylesheet" href="{% static 'plugin/editor-md/css/editormd.preview.min.css' %}">
+{% endblock css %}
+
+{% block js %}
+{#    markdown必备js#}
+    {# Markdown显示必用插件 #}
+    <script src="{% static 'plugin/editor-md/editormd.min.js' %}"></script>
+    <script src="{% static 'plugin/editor-md/lib/marked.min.js' %}"></script>
+    <script src="{% static 'plugin/editor-md/lib/prettify.min.js' %}"></script>
+    <script src="{% static 'plugin/editor-md/lib/raphael.min.js' %}"></script>
+    <script src="{% static 'plugin/editor-md/lib/underscore.min.js' %}"></script>
+    <script src="{% static 'plugin/editor-md/lib/sequence-diagram.min.js' %}"></script>
+    <script src="{% static 'plugin/editor-md/lib/flowchart.min.js' %}"></script>
+    <script src="{% static 'plugin/editor-md/lib/jquery.flowchart.min.js' %}"></script>
+
+    <script type="text/javascript">
+        $(function (){
+            previewMarkdown();
+        })
+
+        // 处理Markdown预览
+        function previewMarkdown(){
+            editormd.markdownToHTML('previewMarkdown', {
+                {#避免一些攻击#}
+                htmlDecode: 'Style.script.iframe'
+            });
+        }
+    </script>
+{% endblock js %}
+
+
+{% block content %}
+    <div class="container">
+
+        <div id="previewMarkdown">
+            <textarea>{{ note.content }}</textarea>
+        </div>
+
+    </div>
+
+{% endblock content %}

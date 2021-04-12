@@ -20,3 +20,14 @@ class IndexView(View):
             setattr(note, 'content_cut', content_cut)
 
         return render(request, 'index.html', {'notes': notes})
+
+
+class DetailView(View):
+    """
+    博客详情
+    """
+    def get(self, request, article_id):
+
+        note = Note.objects.filter(id=article_id).first()
+
+        return render(request, 'detail.html', {'note': note})
