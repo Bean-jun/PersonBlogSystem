@@ -36,7 +36,7 @@
             <a class="navbar-brand" href="{% url 'blog:index' %}">Home</a>
           </div> 
       
-          
+          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">  <!--修复下拉显示-->
             <ul class="nav navbar-nav navbar-right">
               {% if request.user %}
                 {% if request.user.is_super %}
@@ -62,7 +62,7 @@
               {% endif %}
             </ul>
           </div>
-
+        </div>
     </nav>
     {% endblock navbar %}
 

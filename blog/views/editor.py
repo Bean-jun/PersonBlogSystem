@@ -13,9 +13,16 @@ class EditorView(View):
         return render(request, 'editor.html', {'form': form})
 
     def post(self, request):
-        form = NoteForm(request.POST)
+        form = NoteForm(data=request.POST, files=request.FILES)
 
         if form.is_valid():
+
+            # 保存图片
+            img = form.cleaned_data.get('top_image')
+            file = open(img.name, 'wb')
+            for data in img.chunks():
+                file.write(data)
+            file.close()
 
             form.instance.author = request.user
             form.save()
