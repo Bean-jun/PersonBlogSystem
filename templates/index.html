@@ -17,8 +17,7 @@
         <div class="col-sm-6 col-md-4 col-lg-3">
         <a href="{% url 'blog:article' note.id %}">
             <div class="thumbnail">
-                <img src="{% static 'media/' %}{{ note.top_image }}" alt="{{ note.title }}">
-                {#  <img src="{{ MEDIA_URL }}{{ note.top_image }}" alt="{{ note.title }}">#}
+                <img src="{{ note.top_image }}" alt="{{ note.title }}">
                 <div class="caption">
                 <h3>{{ note.title }}</h3>
                 <p>{{ note.content_cut }}</p>

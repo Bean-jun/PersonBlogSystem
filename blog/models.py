@@ -8,6 +8,9 @@ class UserInfo(models.Model):
     password = models.CharField(max_length=32, verbose_name="密码")
     is_super = models.BooleanField(default=False, verbose_name="是否为管理员")
 
+    bucket = models.CharField(max_length=128, verbose_name="用户文件存储桶")
+    region = models.CharField(max_length=32, verbose_name="地区")
+
     
 class Category(models.Model):
     """分类"""

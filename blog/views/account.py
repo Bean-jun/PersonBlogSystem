@@ -1,3 +1,4 @@
+import time
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.http import JsonResponse
@@ -5,6 +6,7 @@ from django.views import View
 from django.conf import settings
 from blog.forms.account import RegisterForm, LoginForm
 from blog.models import UserInfo
+from utils.cos import create_bucket
 
 
 
@@ -27,6 +29,12 @@ class RegisterView(View):
 
             if email in settings.ADMIN_ACCOUNT:
                 form.instance.is_super = True   # settings中直接设置管理员账号
+
+                # 管理员账号需要设置存储桶
+                bucket = f"PersonBlog-{email.split('@')[0]}{int(1000*time.time())}-1305490799"
+                create_bucket(bucket)
+                form.instance.bucket = bucket
+                form.instance.region = 'ap-shanghai'
             else:
                 form.instance.is_super = False  # 任何用户注册都是普通用户
             

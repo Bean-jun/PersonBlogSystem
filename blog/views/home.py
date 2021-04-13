@@ -11,10 +11,10 @@ class IndexView(View):
         """
         图片缩略图-文章标题-摘要[正文切片]
         """
-        notes = Note.objects.all()
+        notes = Note.objects.all().order_by('-create_datetime')
 
         for note in notes:
-            content_cut = note.content[:10]
+            content_cut = note.content[1:10]
 
             # 正文切片
             setattr(note, 'content_cut', content_cut)

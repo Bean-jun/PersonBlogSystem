@@ -125,7 +125,11 @@ STATICFILES_DIRS = (
 )
 
 # 管理员账号
-ADMIN_ACCOUNT = []
+ADMIN_ACCOUNT = ['test@email.com']
+
+# 腾讯云对象存储
+TENCENT_SECRET_ID = 'xxx'
+TENCENT_SECRET_KEY = 'xxx'
 
 try:
     from blog_secret_key import *
