@@ -131,6 +131,15 @@ ADMIN_ACCOUNT = ['test@email.com']
 TENCENT_SECRET_ID = 'xxx'
 TENCENT_SECRET_KEY = 'xxx'
 
+# 访客白名单
+VISITOR_WHITE_FUNCTION = [
+    '',
+    'detail',
+    'register',
+    'login',
+    'logout',
+]
+
 try:
     from blog_secret_key import *
 except NotImplementedError:
