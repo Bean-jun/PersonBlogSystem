@@ -26,10 +26,6 @@ class EditorView(View):
             image_obj = form.cleaned_data['top_image']
 
             # 首页图片回传到cos
-            # 图片名称
-            file_end = image_obj.name.rsplit('.')[-1]
-            key = '{}.{}'.format(datetime.now().strftime('%Y-%m-%d-%H-%M-%S'), file_end)
-
             # 上传图片
             url = upload_file(bucket=request.user.bucket,
                               image_obj=image_obj,
