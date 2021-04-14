@@ -87,7 +87,8 @@ class ModifyView(View):
 
         if form.is_valid():
             image_obj = form.cleaned_data['top_image']
-            if not image_obj.name.startswith('https://personblog'):
+            if 'https://personblog' in image_obj.name or 'https:/PersonBlog' in image_obj.name:
+            # if not image_obj.name.startswith('https://personblog'):
                 # 表示用户需要重新上传图片文件
                 url = upload_file(bucket=request.user.bucket,
                                   image_obj=image_obj,

@@ -25,7 +25,7 @@ class Note(models.Model):
     content = models.TextField(verbose_name="内容")
     create_datetime = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
     modify_datetime = models.DateTimeField(auto_now=True, verbose_name="最后修改时间")
-    top_image = models.ImageField(upload_to='note_image/', height_field='', width_field='', verbose_name="笔记快照")
+    top_image = models.ImageField(max_length=256, upload_to='note_image/', height_field='', width_field='', verbose_name="笔记快照")
 
   
 class Image(models.Model):
