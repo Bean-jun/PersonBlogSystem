@@ -48,6 +48,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'blog.middleware.auth.LoginMiddleware',
 ]
 
 ROOT_URLCONF = 'PersonBlog.urls'
@@ -55,7 +56,7 @@ ROOT_URLCONF = 'PersonBlog.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -123,6 +124,21 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
 
+# 管理员账号
+ADMIN_ACCOUNT = ['test@email.com']
+
+# 腾讯云对象存储
+TENCENT_SECRET_ID = 'xxx'
+TENCENT_SECRET_KEY = 'xxx'
+
+# 访客白名单
+VISITOR_WHITE_FUNCTION = [
+    '',
+    'detail',
+    'register',
+    'login',
+    'logout',
+]
 
 try:
     from blog_secret_key import *
