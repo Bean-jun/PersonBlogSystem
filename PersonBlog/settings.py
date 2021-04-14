@@ -140,6 +140,16 @@ VISITOR_WHITE_FUNCTION = [
     'logout',
 ]
 
+# 静态文件搜集
+STATIC_ROOT = 'xxx'
+
+# 生成环境配置
+try:
+    from setup import *
+except NotImplementedError:
+    pass
+
+# 开发环境配置
 try:
     from blog_secret_key import *
 except NotImplementedError:

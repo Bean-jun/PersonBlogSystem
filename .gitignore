@@ -6,3 +6,6 @@ blog_secret_key.py
 !*/migrations/__init__.py
 /db.sqlite3
 
+/setup.py
+/uwsgi.ini
+/deploy.txt
