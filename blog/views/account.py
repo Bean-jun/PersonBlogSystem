@@ -35,8 +35,19 @@ class RegisterView(View):
                 create_bucket(bucket)
                 form.instance.bucket = bucket
                 form.instance.region = 'ap-shanghai'
+
+                # 普通用户桶 用于存储普通用户头像  在没有超级管理员之前普通用户不可以上传头像
+                # 可能设置多个管理员，这时可能存在重复创建
+                try:
+                    bucket = settings.TENCENT_BUCKET
+                    create_bucket(bucket)
+                except Exception as e:
+                    pass
             else:
                 form.instance.is_super = False  # 任何用户注册都是普通用户
+
+                form.instance.bucket = settings.TENCENT_BUCKET
+                form.instance.region = settings.TENCENT_REGION
             
             form.save()
 
