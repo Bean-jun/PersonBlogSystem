@@ -14,6 +14,9 @@ urlpatterns = [
     path('login/', account.LoginView.as_view(), name='login'), # 用户登录
     path('logout/', account.LogoutView.as_view(), name='logout'), # 用户退出
 
+    # 个人页
+    path('profile/', account.ProFileView.as_view(), name='profile'), # 个人页
+
     # 文章编辑页
     path('editor/', editor.EditorView.as_view(), name='editor'), # 用户编辑
     path('modify/<int:note_id>/', editor.ModifyView.as_view(), name='modify'), # 用户修改

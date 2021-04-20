@@ -1,4 +1,5 @@
 {% load static %}
+{% load profile %}
 <!DOCTYPE html>
 <html lang="zh">
 <head>
@@ -8,70 +9,90 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'plugin/bootstrap/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'plugin/font-awesome/css/font-awesome.min.css' %}">
-    <script type="text/javascript"  src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'plugin/bootstrap/js/bootstrap.min.js' %}"></script>
-    
+
     {% block js %}{% endblock js %}
     {% block css %}{% endblock css %}
     <style type="text/css">
-      .navbar{
-        border-radius: 0;
-      }
+        .navbar {
+            border-radius: 0;
+        }
+
+        .user-image {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+        }
     </style>
     <title> {% block title %}{% endblock title %}</title>
 </head>
 <body>
 
-    {% block navbar %}
+{% block navbar %}
     <nav class="navbar navbar-inverse">
         <div class="container">
-          <!-- Brand and toggle get grouped for better mobile display -->
-          <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-              <!-- <span class="sr-only">Toggle navigation</span> -->
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="{% url 'blog:index' %}">Home</a>
-          </div> 
-      
-          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">  <!--修复下拉显示-->
-            <ul class="nav navbar-nav navbar-right">
-              {% if request.user %}
-                {% if request.user.is_super %}
-                  <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ request.user.username|title }} <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                      <li><a href="{% url 'blog:editor' %}">添加文章</a></li>
-                      <li role="separator" class="divider"></li>
-                      <li><a href="{% url 'blog:logout' %}">退出</a></li>
-                    </ul>
-                  </li>
-                {% else %}
-                  <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ request.user.username|title }} <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                      <li><a href="{% url 'blog:logout' %}">退出</a></li>
-                    </ul>
-                  </li>
-                {% endif %}
-              {% else %}
-              <li><a href="{% url 'blog:login' %}">登录</a></li>
-              <li><a href="{% url 'blog:register' %}">注册</a></li>
-              {% endif %}
-            </ul>
-          </div>
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <!-- <span class="sr-only">Toggle navigation</span> -->
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="{% url 'blog:index' %}">Home</a>
+            </div>
+
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">  <!--修复下拉显示-->
+                <ul class="nav navbar-nav navbar-right">
+                    {% if request.user %}
+                        {% if request.user.is_super %}
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                   aria-haspopup="true" aria-expanded="false">
+                                    {#用户头像#}
+                                    {% user_profile request %}&nbsp;&nbsp;
+                                    {{ request.user.username|title }} <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="{% url 'blog:editor' %}">添加文章</a></li>
+                                    <li role="separator" class="divider"></li>
+                                    <li><a href="{% url 'blog:profile' %}">个人中心</a></li>
+                                    <li role="separator" class="divider"></li>
+                                    <li><a href="{% url 'blog:logout' %}">退出</a></li>
+                                </ul>
+                            </li>
+                        {% else %}
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                   aria-haspopup="true" aria-expanded="false">
+                                    {#用户头像#}
+                                    {% user_profile request %}&nbsp;&nbsp;
+                                    {{ request.user.username|title }} <span
+                                        class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="{% url 'blog:profile' %}">个人中心</a></li>
+                                    <li role="separator" class="divider"></li>
+                                    <li><a href="{% url 'blog:logout' %}">退出</a></li>
+                                </ul>
+                            </li>
+                        {% endif %}
+                    {% else %}
+                        <li><a href="{% url 'blog:login' %}">登录</a></li>
+                        <li><a href="{% url 'blog:register' %}">注册</a></li>
+                    {% endif %}
+                </ul>
+            </div>
         </div>
     </nav>
-    {% endblock navbar %}
+{% endblock navbar %}
 
-    {% block content %}
-    
-    {% endblock content %}
+{% block content %}
 
-    {% block footer %}
-    
-    {% endblock footer %}
+{% endblock content %}
+
+{% block footer %}
+
+{% endblock footer %}
 </body>
 </html>

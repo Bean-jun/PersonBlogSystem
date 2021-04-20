@@ -5,7 +5,7 @@ from django.http import JsonResponse
 from django.views import View
 from django.conf import settings
 from blog.forms.account import RegisterForm, LoginForm
-from blog.models import UserInfo
+from blog.models import UserInfo, Note
 from utils.cos import create_bucket
 
 
@@ -35,8 +35,19 @@ class RegisterView(View):
                 create_bucket(bucket)
                 form.instance.bucket = bucket
                 form.instance.region = 'ap-shanghai'
+
+                # 普通用户桶 用于存储普通用户头像  在没有超级管理员之前普通用户不可以上传头像
+                # 可能设置多个管理员，这时可能存在重复创建
+                try:
+                    bucket = settings.TENCENT_BUCKET
+                    create_bucket(bucket)
+                except Exception as e:
+                    pass
             else:
                 form.instance.is_super = False  # 任何用户注册都是普通用户
+
+                form.instance.bucket = settings.TENCENT_BUCKET
+                form.instance.region = settings.TENCENT_REGION
             
             form.save()
 
@@ -83,3 +94,17 @@ class LogoutView(View):
         request.session.flush()
 
         return redirect(reverse('blog:index'))
+
+
+class ProFileView(View):
+    """个人主页"""
+    def get(self, request):
+
+        if not request.user:
+            return redirect(reverse('blog:index'))
+
+        return render(request, 'profile.html')
+
+    def post(self, request):
+        # 后续用于修改头像
+        pass

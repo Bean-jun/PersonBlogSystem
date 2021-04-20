@@ -8,6 +8,7 @@ class UserInfo(models.Model):
     password = models.CharField(max_length=32, verbose_name="密码")
     is_super = models.BooleanField(default=False, verbose_name="是否为管理员")
 
+    image = models.ImageField(max_length=256, upload_to='UserInfo/', blank=True, null=True, verbose_name="笔记快照")
     bucket = models.CharField(max_length=128, verbose_name="用户文件存储桶")
     region = models.CharField(max_length=32, verbose_name="地区")
 

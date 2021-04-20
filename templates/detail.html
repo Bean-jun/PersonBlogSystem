@@ -1,12 +1,13 @@
 {% extends 'layout/base.html' %}
+{% load profile %}
 {% load static %}
 {% block css %}
-{#    使用markdown必备样式#}
+    {#    使用markdown必备样式#}
     <link rel="stylesheet" href="{% static 'plugin/editor-md/css/editormd.preview.min.css' %}">
 {% endblock css %}
 
 {% block js %}
-{#    markdown必备js#}
+    {#    markdown必备js#}
     {# Markdown显示必用插件 #}
     <script src="{% static 'plugin/editor-md/editormd.js' %}"></script>
     <script src="{% static 'plugin/editor-md/lib/marked.min.js' %}"></script>
@@ -18,12 +19,12 @@
     <script src="{% static 'plugin/editor-md/lib/jquery.flowchart.min.js' %}"></script>
 
     <script type="text/javascript">
-        $(function (){
+        $(function () {
             previewMarkdown();
         })
 
         // 处理Markdown预览
-        function previewMarkdown(){
+        function previewMarkdown() {
             editormd.markdownToHTML('previewMarkdown', {
                 {#避免一些攻击#}
                 htmlDecode: 'Style.script.iframe'
@@ -36,48 +37,62 @@
 {% block navbar %}
     <nav class="navbar navbar-inverse">
         <div class="container">
-          <!-- Brand and toggle get grouped for better mobile display -->
-          <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-              <!-- <span class="sr-only">Toggle navigation</span> -->
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="{% url 'blog:index' %}">Home</a>
-          </div>
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <!-- <span class="sr-only">Toggle navigation</span> -->
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="{% url 'blog:index' %}">Home</a>
+            </div>
 
-          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">  <!--修复下拉显示-->
-            <ul class="nav navbar-nav navbar-right">
-              {% if request.user %}
-                {% if request.user.is_super %}
-                  <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ request.user.username|title }} <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                      <li><a href="{% url 'blog:editor' %}">添加文章</a></li>
-                      <li role="separator" class="divider"></li>
-                        <li><a href="{% url 'blog:modify' note.id %}">修改文章</a></li>
-                      <li role="separator" class="divider"></li>
-                      <li><a href="{% url 'blog:logout' %}">退出</a></li>
-                    </ul>
-                  </li>
-                {% else %}
-                  <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ request.user.username|title }} <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                      <li><a href="{% url 'blog:logout' %}">退出</a></li>
-                    </ul>
-                  </li>
-                {% endif %}
-              {% else %}
-              <li><a href="{% url 'blog:login' %}">登录</a></li>
-              <li><a href="{% url 'blog:register' %}">注册</a></li>
-              {% endif %}
-            </ul>
-          </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">  <!--修复下拉显示-->
+                <ul class="nav navbar-nav navbar-right">
+                    {% if request.user %}
+                        {% if request.user.is_super %}
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                   aria-haspopup="true" aria-expanded="false">
+                                    {#用户头像#}
+                                    {% user_profile request %}&nbsp;&nbsp;
+                                    {{ request.user.username|title }} <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="{% url 'blog:editor' %}">添加文章</a></li>
+                                    <li role="separator" class="divider"></li>
+                                    <li><a href="{% url 'blog:modify' note.id %}">修改文章</a></li>
+                                    <li role="separator" class="divider"></li>
+                                    <li><a href="{% url 'blog:profile' %}">个人中心</a></li>
+                                    <li role="separator" class="divider"></li>
+                                    <li><a href="{% url 'blog:logout' %}">退出</a></li>
+                                </ul>
+                            </li>
+                        {% else %}
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                   aria-haspopup="true" aria-expanded="false">
+                                    {#用户头像#}
+                                    {% user_profile request %}&nbsp;&nbsp;
+                                    {{ request.user.username|title }} <span
+                                        class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="{% url 'blog:profile' %}">个人中心</a></li>
+                                    <li role="separator" class="divider"></li>
+                                    <li><a href="{% url 'blog:logout' %}">退出</a></li>
+                                </ul>
+                            </li>
+                        {% endif %}
+                    {% else %}
+                        <li><a href="{% url 'blog:login' %}">登录</a></li>
+                        <li><a href="{% url 'blog:register' %}">注册</a></li>
+                    {% endif %}
+                </ul>
+            </div>
         </div>
     </nav>
-    {% endblock navbar %}
+{% endblock navbar %}
 {% block content %}
     <div class="container">
 

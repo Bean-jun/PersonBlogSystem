@@ -1,9 +1,21 @@
 from django.shortcuts import render
 from django.views import View
-from blog.models import Note
+from blog.models import Note, UserInfo
 
 
 class IndexView(View):
+    """用户中心页"""
+    def get(self, request):
+        notes = Note.objects.all().order_by('-modify_datetime')[:10]
+        user = UserInfo.objects.filter(is_super=True).first()
+        context = {
+            'notes': notes,
+            'user': user
+        }
+        return render(request, 'home.html', context)
+
+
+class _IndexView(View):
     """
     网站首页
     """
