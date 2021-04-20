@@ -44,15 +44,15 @@
     <script type="text/javascript">
         $(function () {
             var $title = $('.title');
-            {#文本显示#}
-            $title.mouseover(function () {
+            {#文本显示 用click修复部分bug#}
+            $title.click(function () {
                 fid = $(this).attr('fid');
                 id = 'content_' + fid;
                 $(this).next().show(1000, 'swing');
                 previewMarkdown(id);
             });
             {#文本详细内容隐藏#}
-            $('.panel-body').mouseleave(function () {
+            $('.panel-body').click(function () {
                 $(this).hide(1000, 'swing');
             });
         })
@@ -100,7 +100,8 @@
                     <div class="panel-heading title" fid="{{ note.id }}">
 {#                        {{ note.title }}#}
 {#                        {{ note.modify_datetime }}#}
-                        <h3 class="panel-title"><div>{{ note.title }}</div></h3>
+{#                        <h3 class="panel-title">{{ note.title }}</h3>#}
+                        <h3 class="panel-title"><a href="{% url 'blog:article' note.id %}">{{ note.title }}</a></h3>
                         <div>最后修改时间：{{ note.modify_datetime }}</div>
 
                     </div>
