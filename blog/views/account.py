@@ -94,3 +94,9 @@ class LogoutView(View):
         request.session.flush()
 
         return redirect(reverse('blog:index'))
+
+
+class ProFileView(View):
+    """用户中心页"""
+    def get(self, request):
+        return render(request, 'profile.html')

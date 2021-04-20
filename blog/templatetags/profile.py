@@ -8,6 +8,5 @@ register = Library()
 @register.inclusion_tag('inclusion/user_profile.html')
 def user_profile(request):
     user = UserInfo.objects.filter(id=request.user.id).first()
-    print(user.image)
 
     return {'url': user.image}
