@@ -5,7 +5,7 @@ from django.http import JsonResponse
 from django.views import View
 from django.conf import settings
 from blog.forms.account import RegisterForm, LoginForm
-from blog.models import UserInfo
+from blog.models import UserInfo, Note
 from utils.cos import create_bucket
 
 
@@ -97,6 +97,14 @@ class LogoutView(View):
 
 
 class ProFileView(View):
-    """用户中心页"""
+    """个人主页"""
     def get(self, request):
+
+        if not request.user:
+            return redirect(reverse('blog:index'))
+
         return render(request, 'profile.html')
+
+    def post(self, request):
+        # 后续用于修改头像
+        pass
