@@ -16,6 +16,7 @@ urlpatterns = [
 
     # 个人页
     path('profile/', account.ProFileView.as_view(), name='profile'), # 个人页
+    path('profile/user_image', account.UserImage.as_view(), name='user_image'), # 个人头像修改
 
     # 文章编辑页
     path('editor/', editor.EditorView.as_view(), name='editor'), # 用户编辑

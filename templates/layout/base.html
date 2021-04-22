@@ -25,6 +25,26 @@
             border-radius: 50%;
         }
     </style>
+    <script type="text/javascript">
+        $(function () {
+            var windowHeight = $(window).height();
+            var documentHeight = $(document).height();
+
+            if (windowHeight === windowHeight) {
+                $('.footer').removeClass('hide');
+            }else{
+                $('.footer').addClass('hide');
+            }
+            $(window).scroll(function () {
+                var short = documentHeight - $(window).scrollTop();
+                if (short === windowHeight) {
+                    $('.footer').removeClass('hide');
+                } else {
+                    $('.footer').addClass('hide');
+                }
+            });
+        });
+    </script>
     <title> {% block title %}{% endblock title %}</title>
 </head>
 <body>
@@ -92,7 +112,14 @@
 {% endblock content %}
 
 {% block footer %}
+    <nav class="navbar navbar-default navbar-fixed-bottom footer hide">
+        <div class="container" style="height: 50px;">
+            <div style="margin-top: 2px;text-align: center;">
+                没错，我就是页脚
+            </div>
 
+        </div>
+    </nav>
 {% endblock footer %}
 </body>
 </html>

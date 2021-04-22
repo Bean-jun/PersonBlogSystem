@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="{% static 'plugin/editor-md/css/editormd.preview.min.css' %}">
     <style type="text/css">
         body {
-            {#background-color: #101010;#}
+        {#background-color: #101010;#}
         }
 
         .left {
@@ -20,14 +20,40 @@
         .table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
             border-top: 0;
         }
-        .right .title{
+
+        .right .title {
             display: flex;
             flex-direction: row;
             justify-content: space-between;
         }
 
+        .image-btn {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .image-btn-prev {
+            position: absolute;
+            left: 15px;
+            top: 10px;
+            overflow: hidden;
+            width: 254px;
+            height: 254px;
+            opacity: 0;
+        }
     </style>
 {% endblock css %}
+
+{% block js %}
+    <script type="text/javascript">
+        $(function () {
+            // 处理用户头像
+            $('.image-btn-prev').change(function (){
+                $('#imageSubmit').click();
+            });
+        });
+    </script>
+{% endblock js %}
 
 
 {% block title %}profile{% endblock title %}
@@ -39,12 +65,18 @@
             {#            个人简介#}
             <table class="table">
                 <tr>
-                    <img style="height: 254px;
+                    <a href="#" class="image-btn">
+                        <img style="height: 254px;
                                 width: 254px;
                                 margin-top: 10px;
                                 margin-bottom: 45px;
                                 border-radius: 50%;"
-                         src="{{ request.user.image }}" alt="头像"/>
+                             src="{{ request.user.image }}" alt="头像"/>
+                    </a>
+                    <form method="post" action="{% url 'blog:user_image' %}" enctype="multipart/form-data">
+                        <input type="file" class="image-btn-prev" name="image">
+                        <input type="submit" id="imageSubmit" class="hide" value="upload">
+                    </form>
                 </tr>
                 <tr>
                     <th>{{ request.user.username|title }}</th>
@@ -54,13 +86,31 @@
                     <th>{{ request.user.email }}</th>
                 </tr>
             </table>
+            {% if request.user.is_super %}
+                {#添加外链音乐#}
+                <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=255 height=52
+                        src="//music.163.com/outchain/player?type=0&id=454995617&auto=0&height=32"></iframe>
+
+            {% endif %}
 
         </div>
-        {% comment %}
+        {#        {% comment %}#}
         <div class="col-md-9 col-sm-8 right">
-             {# 这里放置用户评论 #}
+            {% if request.user.is_super %}
+                {#管理员区域#}
+                <!--
+                1、修改头像
+                2、修改音乐播放ID
+                -->
+            {% else %}
+                {# 这里放置用户评论 #}
+                <!--
+                1、修改头像
+                2、查看评论过的文章
+                -->
+            {% endif %}
         </div>
-        {% endcomment %}
+        {#        {% endcomment %}#}
     </div>
 
 
