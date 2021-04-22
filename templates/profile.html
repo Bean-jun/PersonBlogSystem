@@ -27,8 +27,33 @@
             justify-content: space-between;
         }
 
+        .image-btn {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .image-btn-prev {
+            position: absolute;
+            left: 15px;
+            top: 10px;
+            overflow: hidden;
+            width: 254px;
+            height: 254px;
+            opacity: 0;
+        }
     </style>
 {% endblock css %}
+
+{% block js %}
+    <script type="text/javascript">
+        $(function () {
+            // 处理用户头像
+            $('.image-btn-prev').change(function (){
+                $('#imageSubmit').click();
+            });
+        });
+    </script>
+{% endblock js %}
 
 
 {% block title %}profile{% endblock title %}
@@ -40,12 +65,18 @@
             {#            个人简介#}
             <table class="table">
                 <tr>
-                    <img style="height: 254px;
+                    <a href="#" class="image-btn">
+                        <img style="height: 254px;
                                 width: 254px;
                                 margin-top: 10px;
                                 margin-bottom: 45px;
                                 border-radius: 50%;"
-                         src="{{ request.user.image }}" alt="头像"/>
+                             src="{{ request.user.image }}" alt="头像"/>
+                    </a>
+                    <form method="post" action="{% url 'blog:user_image' %}" enctype="multipart/form-data">
+                        <input type="file" class="image-btn-prev" name="image">
+                        <input type="submit" id="imageSubmit" class="hide" value="upload">
+                    </form>
                 </tr>
                 <tr>
                     <th>{{ request.user.username|title }}</th>
