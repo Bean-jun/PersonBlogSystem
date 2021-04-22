@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="{% static 'plugin/editor-md/css/editormd.preview.min.css' %}">
     <style type="text/css">
         body {
-            {#background-color: #101010;#}
+        {#background-color: #101010;#}
         }
 
         .left {
@@ -20,7 +20,8 @@
         .table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
             border-top: 0;
         }
-        .right .title{
+
+        .right .title {
             display: flex;
             flex-direction: row;
             justify-content: space-between;
@@ -54,13 +55,31 @@
                     <th>{{ request.user.email }}</th>
                 </tr>
             </table>
+            {% if request.user.is_super %}
+                {#添加外链音乐#}
+                <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=255 height=52
+                        src="//music.163.com/outchain/player?type=0&id=454995617&auto=0&height=32"></iframe>
+
+            {% endif %}
 
         </div>
-        {% comment %}
+        {#        {% comment %}#}
         <div class="col-md-9 col-sm-8 right">
-             {# 这里放置用户评论 #}
+            {% if request.user.is_super %}
+                {#管理员区域#}
+                <!--
+                1、修改头像
+                2、修改音乐播放ID
+                -->
+            {% else %}
+                {# 这里放置用户评论 #}
+                <!--
+                1、修改头像
+                2、查看评论过的文章
+                -->
+            {% endif %}
         </div>
-        {% endcomment %}
+        {#        {% endcomment %}#}
     </div>
 
 

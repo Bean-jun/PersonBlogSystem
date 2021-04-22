@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="{% static 'plugin/editor-md/css/editormd.preview.min.css' %}">
     <style type="text/css">
         body {
-            {#background-color: #101010;#}
+        {#background-color: #101010;#}
         }
 
         .left {
@@ -20,7 +20,8 @@
         .table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
             border-top: 0;
         }
-        .right .title{
+
+        .right .title {
             display: flex;
             flex-direction: row;
             justify-content: space-between;
@@ -76,12 +77,14 @@
             {#            个人简介#}
             <table class="table">
                 <tr>
-                    <img style="height: 254px;
+                    <a href="{{ user.image }}">
+                        <img style="height: 254px;
                                 width: 254px;
                                 margin-top: 10px;
                                 margin-bottom: 45px;
                                 border-radius: 50%;"
-                         src="{{ user.image }}" alt="头像"/>
+                             src="{{ user.image }}" alt="头像"/>
+                    </a>
                 </tr>
                 <tr>
                     <th>{{ user.username|title }}</th>
@@ -91,16 +94,18 @@
                     <th>{{ user.email }}</th>
                 </tr>
             </table>
-
+            {#添加外链音乐#}
+            <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=255 height=52
+                    src="//music.163.com/outchain/player?type=0&id=454995617&auto=0&height=32"></iframe>
         </div>
         <div class="col-md-9 col-sm-8 right">
             {#            文章博客#}
             {% for note in notes %}
                 <div class="panel panel-default">
                     <div class="panel-heading title" fid="{{ note.id }}">
-{#                        {{ note.title }}#}
-{#                        {{ note.modify_datetime }}#}
-{#                        <h3 class="panel-title">{{ note.title }}</h3>#}
+                        {#                        {{ note.title }}#}
+                        {#                        {{ note.modify_datetime }}#}
+                        {#                        <h3 class="panel-title">{{ note.title }}</h3>#}
                         <h3 class="panel-title"><a href="{% url 'blog:article' note.id %}">{{ note.title }}</a></h3>
                         <div>最后修改时间：{{ note.modify_datetime }}</div>
 
