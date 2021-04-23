@@ -27,11 +27,10 @@
 
         .footer {
             bottom: 0;
-            left: 50%;
-            width: 200px;
-            margin-left: -100px;;
+            width: 100%;
             text-align: center;
-            line-height: 100px;
+            line-height: 60px;
+            background-color: #333333;
         }
     </style>
     <script type="text/javascript">
@@ -40,9 +39,9 @@
             var documentHeight = $(document).height();
             console.log(windowHeight+':'+documentHeight);
             if (windowHeight >= documentHeight) {
-                $('.footer').css({'position': 'fixed', 'height': 100});
+                $('.footer').css({'position': 'fixed', 'height': 60});
             } else {
-                $('.footer').css({'position': 'absolute', 'height': 100});
+                $('.footer').css({'position': 'absolute', 'height': 60});
             }
         });
     </script>
@@ -120,7 +119,10 @@
 {% block footer %}
     {# 页脚 #}
     <div class="footer">
-        没错，我就是页脚
+        <img src="{% static 'image/icp.png' %}" alt="备案徽章">
+        <a href="https://beian.miit.gov.cn" target="_blank">
+            鄂ICP备2021007126号
+        </a>
     </div>
 {% endblock footer %}
 </body>
