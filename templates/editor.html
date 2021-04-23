@@ -79,11 +79,9 @@
 {% block navbar %}
     <nav class="navbar navbar-inverse">
         <div class="container">
-            <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
                         data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                    <!-- <span class="sr-only">Toggle navigation</span> -->
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
@@ -124,45 +122,46 @@
 
 {% block content %}
 
-    {#    <div class="title">用户登录</div>#}
-    <br/>
-    <form class="form-horizontal" method="post" enctype="multipart/form-data" novalidate>
-        {% csrf_token %}
-        {% for field in form %}
-            {% if field.name == 'content' %}
-                <div class="form-group">
-                <div class="col-sm-8 col-sm-offset-2">
-                    <div id="editor">
-                        {{ field }}
-                    </div>
-                    <span class="error-msg">{{ field.errors.0 }}</span>
-                </div>
-            {% elif field.name == 'top_image' %}
-                <div class="form-group">
-                    <div class="col-sm-6 col-sm-offset-3 image-btn">
-                        {{ field }}
+    <div class="row" style="margin-bottom: 100px">
+        <br/>
+        <form class="form-horizontal" method="post" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+            {% for field in form %}
+                {% if field.name == 'content' %}
+                    <div class="form-group">
+                    <div class="col-sm-8 col-sm-offset-2">
+                        <div id="editor">
+                            {{ field }}
+                        </div>
                         <span class="error-msg">{{ field.errors.0 }}</span>
-                        <br/>
-                        <br/>
                     </div>
-                </div>
-            {% elif field.name == 'title' %}
-                <div class="form-group">
-                    <div class="col-sm-6 col-sm-offset-3">
-                        {{ field }}
-                        <span class="error-msg">{{ field.errors.0 }}</span>
-                        <br/>
-                        <br/>
+                {% elif field.name == 'top_image' %}
+                    <div class="form-group">
+                        <div class="col-sm-6 col-sm-offset-3 image-btn">
+                            {{ field }}
+                            <span class="error-msg">{{ field.errors.0 }}</span>
+                            <br/>
+                            <br/>
+                        </div>
                     </div>
-                </div>
-            {% endif %}
-        {% endfor %}
+                {% elif field.name == 'title' %}
+                    <div class="form-group">
+                        <div class="col-sm-6 col-sm-offset-3">
+                            {{ field }}
+                            <span class="error-msg">{{ field.errors.0 }}</span>
+                            <br/>
+                            <br/>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
 
-        <div class="form-group">
-            <div class="col-sm-offset-8 col-sm-2">
-                <button type="submit" id="btnSubmit" class="btn btn-success center-block">提交</button>
+            <div class="form-group">
+                <div class="col-sm-offset-8 col-sm-2">
+                    <button type="submit" id="btnSubmit" class="btn btn-success center-block">提交</button>
+                </div>
             </div>
-        </div>
-        </div>
-    </form>
+            </div>
+        </form>
+    </div>
 {% endblock content %}
