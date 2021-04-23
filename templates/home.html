@@ -4,30 +4,7 @@
 
 {% block css %}
     <link rel="stylesheet" href="{% static 'plugin/editor-md/css/editormd.preview.min.css' %}">
-    <style type="text/css">
-        body {
-        {#background-color: #101010;#}
-        }
-
-        .left {
-            height: 100%;
-        }
-
-        .right {
-            height: 100%;
-        }
-
-        .table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
-            border-top: 0;
-        }
-
-        .right .title {
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-        }
-
-    </style>
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
 {% endblock css %}
 
 {% block js %}
@@ -72,7 +49,7 @@
 
 
 {% block content %}
-    <div class="container content">
+    <div class="row" style="margin-bottom: 100px">
         <div class="col-md-3 col-sm-4 hidden-xs left">
             {#            个人简介#}
             <table class="table">
