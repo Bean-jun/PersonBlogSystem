@@ -139,6 +139,7 @@ VISITOR_WHITE_FUNCTION = [
     'login',
     'logout',
     'profile',
+    'category',
 ]
 
 # 访客注册账号存储桶
