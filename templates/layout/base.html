@@ -1,5 +1,6 @@
 {% load static %}
 {% load profile %}
+{% load category_navigate %}
 <!DOCTYPE html>
 <html lang="zh">
 <head>
@@ -20,8 +21,8 @@
         }
 
         .user-image {
-            width: 25px;
-            height: 25px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
         }
 
@@ -32,12 +33,18 @@
             line-height: 60px;
             background-color: #333333;
         }
+
+        #bs-example-navbar-collapse-1 > ul.nav.navbar-nav.navbar-right > li > a {
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+
     </style>
     <script type="text/javascript">
         $(function () {
             var windowHeight = $(window).height();
             var documentHeight = $(document).height();
-            console.log(windowHeight+':'+documentHeight);
+            console.log(windowHeight + ':' + documentHeight);
             if (windowHeight >= documentHeight) {
                 $('.footer').css({'position': 'fixed', 'height': 60});
             } else {
@@ -64,6 +71,7 @@
             </div>
 
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">  <!--修复下拉显示-->
+                {% category_navigate request %}
                 <ul class="nav navbar-nav navbar-right">
                     {% if request.user %}
                         {% if request.user.is_super %}

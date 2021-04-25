@@ -27,7 +27,7 @@ def match_title(url):
         else:
             res = re.search('<title>.+', response.text).group()
             title = res.strip('<title>').split(' -')[0]
-        return title
+            return title
     except Exception as e:
         pass
 

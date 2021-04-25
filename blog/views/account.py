@@ -5,7 +5,9 @@ from django.http import JsonResponse
 from django.views import View
 from django.conf import settings
 from blog.forms.account import RegisterForm, LoginForm
-from blog.models import UserInfo, Note
+from blog.forms.category import CategoryModelForm
+from blog.forms.song import SongModelForm
+from blog.models import UserInfo, Note, Category, Song
 from utils.cos import create_bucket, upload_file
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
@@ -106,11 +108,73 @@ class ProFileView(View):
         if not request.user:
             return redirect(reverse('blog:index'))
 
-        return render(request, 'profile.html')
+        # 处理用户音乐链接的添加
+        song_url = request.GET.get('link')
+        if song_url:
+            try:
+                # https://music.163.com/playlist?id=454995617&userid=326393776
+                # https://music.163.com/playlist?id=2919885148&userid=326393776
+                song_form = SongModelForm(request, data=request.GET)
+                if song_form.is_valid():
+                    song_form.cleaned_data.pop('link')
+                    # 添加数据库中
+                    Song.objects.filter(user=request.user).create(**song_form.cleaned_data)
+                    return JsonResponse({'msg': 'ok', 'code': 200})
+                else:
+                    return JsonResponse({'msg': song_form.errors, 'code': 416})
+            except Exception as e:
+                # 处理异常
+                pass
+
+        # 处理用户音乐的删除&&播放
+        action_list = ['play', 'stop', 'delete']
+        action_response = request.GET
+        if action_response:
+            # 获取用户音乐设置，开始处理
+            song_obj = Song.objects.filter(user=request.user)
+            try:
+                for action in action_list:
+                    id = action_response.get(action)
+                    if action == action_list[0]:
+                        # 设置播放
+                        song_obj.update(is_play=False)
+                        song_obj.filter(id=id).update(is_play=True)
+                    if action == action_list[1]:
+                        # 设置暂停
+                        song_obj.filter(id=id).update(is_play=False)
+                    if action == action_list[2]:
+                        # 删除
+                        song_obj.filter(id=id).first().delete()
+                return redirect(reverse('blog:profile'))
+            except Exception as e:
+                pass
+
+        category = Category.objects.filter(user__is_super=True)
+        song = Song.objects.filter(user__is_super=True)  # 歌单展示
+        form = CategoryModelForm(request)
+        song_form = SongModelForm(request)
+
+        context = {
+            'category': category,
+            'song': song,
+            'form': form,
+            'song_form': song_form
+        }
+
+        return render(request, 'profile.html', context)
 
     def post(self, request):
-        # 后续用于修改头像
-        pass
+        # 添加博客标签
+        form = CategoryModelForm(request, data=request.POST)
+
+        if form.is_valid():
+            # 添加分类
+            form.instance.user = request.user
+            form.save()
+
+            return JsonResponse({'msg': 'ok', 'code': 200})
+
+        return JsonResponse({'msg': form.errors, 'code': 416})
 
 
 @method_decorator(csrf_exempt, name='dispatch')

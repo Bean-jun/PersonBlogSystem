@@ -1,4 +1,4 @@
-.account{
+.account {
     width: 600px;
     margin-top: 100px;
     margin-left: auto;
@@ -8,15 +8,24 @@
     padding: 10px 30px 30px 30px;
     box-shadow: 5px 10px 10px rgba(0, 0, 0, 0.3);
 }
-.account .title{
+
+.account .title {
     font-size: 25px;
     font-weight: bold;
     text-align: center;
 }
-.account .form-group{
+
+.account .form-group {
     margin-bottom: 20px;
 }
-.account .error-msg{
+
+.account .error-msg {
+    position: absolute;
+    font-size: 12px;
+    color: red;
+}
+
+.error-msg {
     position: absolute;
     font-size: 12px;
     color: red;

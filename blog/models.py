@@ -15,6 +15,7 @@ class UserInfo(models.Model):
 
 class Category(models.Model):
     """分类"""
+    user = models.ForeignKey('UserInfo', on_delete=models.CASCADE, verbose_name="用户名")
     name = models.CharField(max_length=32, verbose_name="分类名称")
     create_datetime = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
 
@@ -22,6 +23,7 @@ class Category(models.Model):
 class Note(models.Model):
     """用户笔记表"""
     author = models.ForeignKey('UserInfo', on_delete=models.CASCADE, verbose_name="作者")
+    category = models.ForeignKey('Category', on_delete=models.CASCADE, verbose_name="笔记分类")
     title = models.CharField(max_length=32, verbose_name="标题")
     content = models.TextField(verbose_name="内容")
     create_datetime = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
@@ -50,11 +52,7 @@ class UserComment(models.Model):
 
 class Song(models.Model):
     """博客歌单"""
-    PLAY_CHOICES = (
-        (1, '播放'),
-        (2, '暂停'),
-    )
     user = models.ForeignKey('UserInfo', on_delete=models.CASCADE, verbose_name="用户")
-    song_id = models.IntegerField(verbose_name='歌单ID')
+    song_id = models.CharField(max_length=64, verbose_name='歌单ID')
     title = models.CharField(max_length=64, verbose_name="歌单标题")
-    is_play = models.BooleanField(choices=PLAY_CHOICES, default=2, verbose_name="是否首页播放")
+    is_play = models.BooleanField(default=False, verbose_name="是否首页播放")

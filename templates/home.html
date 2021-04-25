@@ -1,4 +1,5 @@
 {% extends 'layout/base.html' %}
+{% load netease %}
 {% load profile %}
 {% load static %}
 
@@ -72,8 +73,9 @@
                 </tr>
             </table>
             {#添加外链音乐#}
-            <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=255 height=52
-                    src="//music.163.com/outchain/player?type=0&id=454995617&auto=0&height=32"></iframe>
+            {#            <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=255 height=52#}
+            {#                    src="//music.163.com/outchain/player?type=0&id=454995617&auto=0&height=32"></iframe>#}
+            {% netease_music request %}
         </div>
         <div class="col-md-9 col-sm-8 right">
             <!--博客更新处-->
@@ -105,7 +107,7 @@
             {% endfor %}
 
             <!--更新记录-->
-        
+
         </div>
     </div>
 
