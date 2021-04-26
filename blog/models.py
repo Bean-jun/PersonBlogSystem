@@ -20,6 +20,9 @@ class Category(models.Model):
     create_datetime = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
 
 
+    def __str__(self):
+        return self.name
+
 class Note(models.Model):
     """用户笔记表"""
     author = models.ForeignKey('UserInfo', on_delete=models.CASCADE, verbose_name="作者")

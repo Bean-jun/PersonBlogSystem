@@ -21,6 +21,7 @@ urlpatterns = [
 
     # 文章编辑页
     path('editor/', editor.EditorView.as_view(), name='editor'), # 用户编辑
-    path('modify/<int:note_id>/', editor.ModifyView.as_view(), name='modify'), # 用户修改
+    path('modify/<int:note_id>/', editor.ModifyView.as_view(), name='modify'), # 用户博客修改
+    path('delete/<int:note_id>/', editor.DeleteView.as_view(), name='delete'), # 用户博客删除
     path('editor/image_upload/', editor.ImageUploadView.as_view(), name="image_upload"),  # 图片上传
 ]
