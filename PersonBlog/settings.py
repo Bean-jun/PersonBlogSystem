@@ -138,7 +138,13 @@ VISITOR_WHITE_FUNCTION = [
     'register',
     'login',
     'logout',
+    'profile',
+    'category',
 ]
+
+# 访客注册账号存储桶
+TENCENT_BUCKET = 'PersonBlog-visitor-1305490799'
+TENCENT_REGION = 'ap-shanghai'
 
 # 静态文件搜集
 STATIC_ROOT = 'xxx'

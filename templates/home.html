@@ -1,0 +1,115 @@
+{% extends 'layout/base.html' %}
+{% load netease %}
+{% load profile %}
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'plugin/editor-md/css/editormd.preview.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+{% endblock css %}
+
+{% block js %}
+    {#    markdown必备js#}
+    {# Markdown显示必用插件 #}
+    <script src="{% static 'plugin/editor-md/editormd.js' %}"></script>
+    <script src="{% static 'plugin/editor-md/lib/marked.min.js' %}"></script>
+    <script src="{% static 'plugin/editor-md/lib/prettify.min.js' %}"></script>
+    <script src="{% static 'plugin/editor-md/lib/raphael.min.js' %}"></script>
+    <script src="{% static 'plugin/editor-md/lib/underscore.min.js' %}"></script>
+    <script src="{% static 'plugin/editor-md/lib/sequence-diagram.min.js' %}"></script>
+    <script src="{% static 'plugin/editor-md/lib/flowchart.min.js' %}"></script>
+    <script src="{% static 'plugin/editor-md/lib/jquery.flowchart.min.js' %}"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            var $title = $('.title');
+            {#文本显示 用click修复部分bug#}
+            $title.click(function () {
+                fid = $(this).attr('fid');
+                id = 'content_' + fid;
+                $(this).next().show(1000, 'swing');
+                previewMarkdown(id);
+            });
+            {#文本详细内容隐藏#}
+            $('.panel-body').click(function () {
+                $(this).hide(1000, 'swing');
+            });
+        })
+
+        // 处理Markdown预览
+        function previewMarkdown(id) {
+            editormd.markdownToHTML(id, {
+                {#避免一些攻击#}
+                htmlDecode: 'Style.script.iframe'
+            });
+        }
+    </script>
+{% endblock js %}
+
+{% block title %}About Me{% endblock title %}
+
+
+{% block content %}
+    <div class="row" style="margin-bottom: 100px">
+        <div class="col-md-3 col-sm-4 hidden-xs left">
+            {#            个人简介#}
+            <table class="table">
+                <tr>
+                    <a href="{% url 'blog:profile' %}">
+                        <img style="height: 254px;
+                                width: 254px;
+                                margin-top: 10px;
+                                margin-bottom: 45px;
+                                border-radius: 50%;"
+                             src="{{ user.image }}" alt="头像"/>
+                    </a>
+                </tr>
+                <tr>
+                    <th>{{ user.username|title }}</th>
+                </tr>
+                <tr>
+                    <th>邮箱：</th>
+                    <th>{{ user.email }}</th>
+                </tr>
+            </table>
+            {#添加外链音乐#}
+            {#            <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=255 height=52#}
+            {#                    src="//music.163.com/outchain/player?type=0&id=454995617&auto=0&height=32"></iframe>#}
+            {% netease_music request %}
+        </div>
+        <div class="col-md-9 col-sm-8 right">
+            <!--博客更新处-->
+            <div class="page-header">
+                <h3 style="margin: 40px 15px 20px;">最近更新 <small>博客文章</small></h3>
+
+            </div>
+            {% for note in notes %}
+                <div class="col-sm-6 col-xs-12 update-blog">
+                    {#                        文章博客#}
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading title" fid="{{ note.id }}">
+                            <h3 class="panel-title"><a
+                                    href="{% url 'blog:article' note.id %}">{{ note.title }}</a></h3>
+                            <br/>
+                            <div>{{ note.modify_datetime|date:"Y-m-d" }}</div>
+
+                        </div>
+                        <div class="panel-body" style="display: none" id="content_{{ note.id }}">
+                            <div>
+                                <textarea>{{ note.content }}</textarea>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            {% endfor %}
+
+            <!--更新记录-->
+
+        </div>
+    </div>
+
+
+{% endblock content %}
