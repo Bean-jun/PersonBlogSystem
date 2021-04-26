@@ -7,20 +7,47 @@ from blog.forms.editor import NoteForm
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 
-from blog.models import Note
+from blog.models import Note, Category
 from utils.cos import upload_file
 
 
 class EditorView(View):
     """图文编辑页"""
+
     def get(self, request):
 
-        form = NoteForm()
+        # 用户请求当前分类的文章列表，返回当前列表
+        editor_category_list_id = request.GET.get('editor_category_list')
+        notes = None
+        try:
+            category_id = int(editor_category_list_id)
+            notes = Note.objects.filter(category_id=category_id)
+        except Exception as e:
+            pass
 
-        return render(request, 'editor.html', {'form': form})
+        # 处理分类列表&不同分类的文章总数
+        category = Category.objects.filter(user=request.user)
+        category_list = []
+        for item in category:
+            count = Note.objects.filter(category=item).count()
+            # 处理当前分类数量
+            setattr(item, 'count', count)
+            category_list.append(item)
+
+        # 博客编辑表单
+        form = NoteForm(request)
+
+        # 组织上下文
+        context = {
+            'form': form,
+            'category_list': category_list,
+            'notes': notes,
+        }
+
+        return render(request, 'editor.html', context)
 
     def post(self, request):
-        form = NoteForm(data=request.POST, files=request.FILES)
+        form = NoteForm(request, data=request.POST, files=request.FILES)
 
         if form.is_valid():
             image_obj = form.cleaned_data['top_image']
@@ -36,7 +63,7 @@ class EditorView(View):
             form.instance.author = request.user
             form.save()
 
-            return redirect(reverse('blog:article', args=(form.instance.id,)))
+            return redirect(reverse('blog:editor'))
 
         return render(request, 'editor.html', {'form': form})
 
@@ -70,26 +97,49 @@ class ImageUploadView(View):
 
 class ModifyView(View):
     """图文修改页"""
+
     def get(self, request, note_id):
 
-        note = Note.objects.filter(id=note_id).first()
-        if not note:
+        modify_note = Note.objects.filter(author=request.user, id=note_id).first()
+        if not modify_note:
             return redirect(reverse('blog:editor'))
 
-        form = NoteForm(initial=dict(title=note.title, content=note.content))
+        form = NoteForm(request, initial=dict(title=modify_note.title,
+                                              category=modify_note.category,
+                                              content=modify_note.content))
 
-        return render(request, 'editor.html', {'form': form})
+        # 处理分类列表&不同分类的文章总数
+        category = Category.objects.filter(user=request.user)
+        category_list = []
+        for item in category:
+            count = Note.objects.filter(category=item).count()
+            # 处理当前分类数量
+            setattr(item, 'count', count)
+            category_list.append(item)
+
+        # 组织上下文
+        context = {
+            'form': form,
+            'category_list': category_list,
+        }
+
+        return render(request, 'editor.html', context)
 
     def post(self, request, note_id):
-        note = Note.objects.get(id=note_id)
+        note = Note.objects.get(author=request.user, id=note_id)
 
-        form = NoteForm(instance=note, data=request.POST, files=request.FILES)
+        form = NoteForm(request, instance=note, data=request.POST, files=request.FILES)
 
         if form.is_valid():
             image_obj = form.cleaned_data['top_image']
-            if ('https://personblog' not in image_obj.name) or ('https:/PersonBlog' not in image_obj.name):
-                # if not image_obj.name.startswith('https://personblog'):
-                # 表示用户需要重新上传图片文件
+            file_size = None
+            try:
+                file_size = image_obj.size
+            except FileNotFoundError as e:
+                print("文件早已经存在", e.args)
+
+            # 用户需要重新上传图片文件
+            if file_size:
                 url = upload_file(bucket=request.user.bucket,
                                   image_obj=image_obj,
                                   region=request.user.region)
@@ -97,6 +147,16 @@ class ModifyView(View):
 
             # 返回数据
             form.save()
-            return redirect(reverse('blog:article', args=(form.instance.id,)))
+
+            return redirect(reverse('blog:editor'))
 
         return render(request, 'editor.html', {'form': form})
+
+
+class DeleteView(View):
+    """文章删除"""
+
+    def get(self, request, note_id):
+        Note.objects.filter(author=request.user, id=note_id).delete()
+
+        return redirect(reverse('blog:editor'))
