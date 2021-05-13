@@ -7,7 +7,7 @@ app_name = 'blog'
 urlpatterns = [
     # 网站首页及详细页
     path('', home.IndexView.as_view(), name="index"), # 网站首页
-    path('category/<int:category_id>', home.CategoryListView.as_view(), name="category"), # 网站分类列表页
+    path('category/<int:category_id>/', home.CategoryListView.as_view(), name="category"), # 网站分类列表页
     path('detail/<int:article_id>/', home.DetailView.as_view(), name="article"), # 笔记详情
 
     # 账户注册登录部分
