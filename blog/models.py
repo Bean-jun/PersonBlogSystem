@@ -1,12 +1,14 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
 
-class UserInfo(models.Model):
+class UserInfo(AbstractUser):
     """用户表"""
-    username = models.CharField(max_length=32, verbose_name="用户名")
-    email = models.EmailField(max_length=32, verbose_name="邮箱", db_index=True)
-    password = models.CharField(max_length=32, verbose_name="密码")
+    # username = models.CharField(max_length=32, verbose_name="用户名")
+    # email = models.EmailField(max_length=32, verbose_name="邮箱", db_index=True)
+    # password = models.CharField(max_length=32, verbose_name="密码")
     is_super = models.BooleanField(default=False, verbose_name="是否为管理员")
+    # AbstractUser中的is_superuser 在这部分中使用is_super替代
 
     image = models.ImageField(max_length=256, upload_to='UserInfo/', blank=True, null=True, verbose_name="笔记快照")
     bucket = models.CharField(max_length=128, verbose_name="用户文件存储桶")
