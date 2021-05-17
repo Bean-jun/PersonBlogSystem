@@ -187,7 +187,7 @@ class SyncView(View):
         client = YuQueConnect(settings.YUQUE_TOKEN, settings.HEADERS)
 
         repos_slug = note.category.repos_slug
-        slug = note.category.name + str(note.id)
+        slug = ''.join(lazy_pinyin(note.category.name)) + str(note.id)
         detail = {
             "title": note.title,
             "slug": slug,
