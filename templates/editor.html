@@ -78,7 +78,29 @@
 
         $(function () {
             initEditorMd();
+            sendYuQue();
         })
+
+        // 发送到yuque
+        function sendYuQue() {
+            $('.send-to-yuque').click(function () {
+                $yuque = $(this).children('a');
+                fid = $yuque.attr('id');
+                console.log(fid);
+
+                $.ajax({
+                    url: '{% url 'blog:sync'  %}?note_id=' + fid,
+                    type: 'get',
+                }).done(function (data) {
+                    document.title = data.msg;
+                    if (data.code === 200) {
+                        $yuque.addClass('disabled');
+                    }
+                }).fail(function () {
+                    console.log("网络连接失败");
+                })
+            })
+        }
 
         // Markdown编辑器的初始化
         function initEditorMd() {
@@ -184,12 +206,19 @@
                                         <i class="fa fa-edit"></i> 修改
                                     </a>
                                 </span>
-                                {#后面用于同步微信公众号#}
-                                <span class="badge send-to-wechat">
-                                    <a href="#"
-                                       style="color: #0af10a;text-decoration: none;">
-                                        <i class="fa fa-send"></i> 同步
-                                    </a>
+                                {#后面用于同步#}
+                                <span class="badge send-to-yuque">
+                                    {% if item.sync_status %}
+                                        <a href="#" id="{{ item.id }}"
+                                           style="color: #040404;text-decoration: none;" class="disabled">
+                                                <i class="fa fa-send"></i> 同步
+                                        </a>
+                                    {% else %}
+                                        <a href="#" id="{{ item.id }}"
+                                           style="color: #0af10a;text-decoration: none;">
+                                                <i class="fa fa-send"></i> 同步
+                                        </a>
+                                    {% endif %}
                                 </span>
                                 <span class="badge">
                                     <a href="{% url 'blog:delete' item.id %}"

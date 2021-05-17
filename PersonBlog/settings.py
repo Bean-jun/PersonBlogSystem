@@ -157,6 +157,16 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
 }
 
+# 请求头
+HEADERS = {
+    "Content-Type": "application/json",
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36 Edg/90.0.818.56",
+    "X-Auth-Token": None
+}
+
+# 语雀账户Token
+YUQUE_TOKEN = "xxxxxxx"
+
 # 生成环境配置
 try:
     from setup import *

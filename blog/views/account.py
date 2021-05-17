@@ -4,6 +4,8 @@ from django.urls import reverse
 from django.http import JsonResponse
 from django.views import View
 from django.conf import settings
+from pypinyin import lazy_pinyin
+
 from blog.forms.account import RegisterForm, LoginForm
 from blog.forms.category import CategoryModelForm
 from blog.forms.song import SongModelForm
@@ -11,6 +13,8 @@ from blog.models import UserInfo, Note, Category, Song
 from utils.cos import create_bucket, upload_file
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
+
+from utils.yuque_sync import YuQueConnect
 
 
 class RegisterView(View):
@@ -170,9 +174,27 @@ class ProFileView(View):
         if form.is_valid():
             # 添加分类
             form.instance.user = request.user
-            form.save()
 
-            return JsonResponse({'msg': 'ok', 'code': 200})
+            name = form.cleaned_data.get('name')  # 分类名称
+            repos_slug = ''.join(lazy_pinyin(name))
+
+            # 创建语雀平台知识库
+            client = YuQueConnect(settings.YUQUE_TOKEN, settings.HEADERS)
+            repos = {
+                "name": name,
+                "slug": repos_slug,
+                "description": name,
+                "public": 0,
+                "type": "Book"
+            }
+            response = client.create_user_repos(**repos)
+
+            if response:
+                # 添加语雀平台知识库repos_slug
+                form.instance.repos_slug = repos_slug
+                form.save()
+
+                return JsonResponse({'msg': 'ok', 'code': 200})
 
         return JsonResponse({'msg': form.errors, 'code': 416})
 
