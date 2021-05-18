@@ -92,7 +92,7 @@
                             <h3 class="panel-title"><a
                                     href="{% url 'blog:article' note.id %}">{{ note.title }}</a></h3>
                             <br/>
-                            <div>{{ note.modify_datetime|date:"Y-m-d" }}</div>
+                            <div>{{ note.create_datetime|date:"Y-m-d" }}</div>
 
                         </div>
                         <div class="panel-body" style="display: none" id="content_{{ note.id }}">

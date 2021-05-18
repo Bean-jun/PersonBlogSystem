@@ -7,7 +7,7 @@ class IndexView(View):
     """用户中心页"""
 
     def get(self, request):
-        notes = Note.objects.all().order_by('-modify_datetime')[:14]
+        notes = Note.objects.all().order_by('-create_datetime')[:14]
         user = UserInfo.objects.filter(is_super=True).first()
         context = {
             'notes': notes,
