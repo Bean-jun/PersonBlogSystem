@@ -1,9 +1,8 @@
-from datetime import datetime
-
 from django.conf import settings
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, reverse
 from django.views import View
+from django_redis import get_redis_connection
 from pypinyin import lazy_pinyin
 
 from blog.forms.editor import NoteForm
@@ -15,7 +14,17 @@ from utils.cos import upload_file
 from utils.yuque_sync import YuQueConnect
 
 
-class EditorView(View):
+class SyncIndex(View):
+    """修改同步到首页"""
+    client = get_redis_connection('default')
+
+    def dispatch(self, request, *args, **kwargs):
+        # 删除首页视图，让其重新生成
+        SyncIndex.client.delete(':1:index')
+        return super().dispatch(request, *args, **kwargs)
+
+
+class EditorView(SyncIndex):
     """图文编辑页"""
 
     def get(self, request):
@@ -73,7 +82,7 @@ class EditorView(View):
 
 
 @method_decorator(csrf_exempt, name='dispatch')
-class ImageUploadView(View):
+class ImageUploadView(SyncIndex):
     def post(self, request):
         context = {
             # 上传成功success为1，url为上传成功后的返回链接，用于图片显示，message用于提示
@@ -99,7 +108,7 @@ class ImageUploadView(View):
         return JsonResponse(context)
 
 
-class ModifyView(View):
+class ModifyView(SyncIndex):
     """图文修改页"""
 
     def get(self, request, note_id):
@@ -159,7 +168,7 @@ class ModifyView(View):
         return render(request, 'editor.html', {'form': form})
 
 
-class DeleteView(View):
+class DeleteView(SyncIndex):
     """文章删除"""
 
     def get(self, request, note_id):

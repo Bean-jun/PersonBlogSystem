@@ -1,18 +1,24 @@
 from django.shortcuts import render
 from django.views import View
 from blog.models import Note, UserInfo
+from django.core.cache import cache
 
 
 class IndexView(View):
     """用户中心页"""
 
     def get(self, request):
-        notes = Note.objects.all().order_by('-create_datetime')[:14]
-        user = UserInfo.objects.filter(is_super=True).first()
-        context = {
-            'notes': notes,
-            'user': user
-        }
+        # 页面缓存，提高访问速度
+        context = cache.get('index')
+        if not context:
+            notes = Note.objects.all().order_by('-create_datetime')[:14]
+            user = UserInfo.objects.filter(is_super=True).first()
+            context = {
+                'notes': notes,
+                'user': user
+            }
+            cache.set('index', context, 60 * 60 * 2)
+
         return render(request, 'home.html', context)
 
 
