@@ -7,6 +7,7 @@ from blog.forms.bootstrap import BootStrapForm
 
 class RegisterForm(BootStrapForm, forms.ModelForm):
     """用户注册校验"""
+    email = forms.EmailField(label='邮箱地址')
 
     password = forms.CharField(label='密码',
                                min_length=8,
@@ -16,14 +17,14 @@ class RegisterForm(BootStrapForm, forms.ModelForm):
                                    'max_length': '密码不易太长',
                                },
                                widget=forms.PasswordInput())
-    
+
     confirm_password = forms.CharField(label='重复密码',
                                        min_length=8,
                                        max_length=32,
                                        error_messages={
-                                            'min_length': '密码不易太短',
-                                            'max_length': '密码不易太长',
-                                        },
+                                           'min_length': '密码不易太短',
+                                           'max_length': '密码不易太长',
+                                       },
                                        widget=forms.PasswordInput())
 
     class Meta:
@@ -37,13 +38,13 @@ class RegisterForm(BootStrapForm, forms.ModelForm):
         exists = UserInfo.objects.filter(email=email).exists()
         if exists:
             raise ValidationError("该邮箱已注册")
-        
+
         return email
 
     def clean_password(self):
         """加密密码"""
         password = self.cleaned_data['password']
-        
+
         return md5(password)
 
     def clean_confirm_password(self):
@@ -59,6 +60,7 @@ class RegisterForm(BootStrapForm, forms.ModelForm):
 
 class LoginForm(BootStrapForm, forms.ModelForm):
     """用户登录校验"""
+    email = forms.EmailField(label='邮箱地址')
 
     password = forms.CharField(label='密码',
                                min_length=8,
@@ -68,6 +70,7 @@ class LoginForm(BootStrapForm, forms.ModelForm):
                                    'max_length': '密码不易太长',
                                },
                                widget=forms.PasswordInput())
+
     class Meta:
         model = UserInfo
         fields = ['email', 'password']
@@ -79,11 +82,11 @@ class LoginForm(BootStrapForm, forms.ModelForm):
         exists = UserInfo.objects.filter(email=email).exists()
         if not exists:
             raise ValidationError("该邮箱未注册")
-        
+
         return email
 
     def clean_password(self):
         """加密密码"""
         password = self.cleaned_data['password']
-        
+
         return md5(password)

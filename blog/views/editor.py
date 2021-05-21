@@ -1,17 +1,30 @@
-from datetime import datetime
-
+from django.conf import settings
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, reverse
 from django.views import View
+from django_redis import get_redis_connection
+from pypinyin import lazy_pinyin
+
 from blog.forms.editor import NoteForm
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 
 from blog.models import Note, Category
 from utils.cos import upload_file
+from utils.yuque_sync import YuQueConnect
 
 
-class EditorView(View):
+class SyncIndex(View):
+    """修改同步到首页"""
+    client = get_redis_connection('default')
+
+    def dispatch(self, request, *args, **kwargs):
+        # 删除首页视图，让其重新生成
+        SyncIndex.client.delete(':1:index')
+        return super().dispatch(request, *args, **kwargs)
+
+
+class EditorView(SyncIndex):
     """图文编辑页"""
 
     def get(self, request):
@@ -69,7 +82,7 @@ class EditorView(View):
 
 
 @method_decorator(csrf_exempt, name='dispatch')
-class ImageUploadView(View):
+class ImageUploadView(SyncIndex):
     def post(self, request):
         context = {
             # 上传成功success为1，url为上传成功后的返回链接，用于图片显示，message用于提示
@@ -95,7 +108,7 @@ class ImageUploadView(View):
         return JsonResponse(context)
 
 
-class ModifyView(View):
+class ModifyView(SyncIndex):
     """图文修改页"""
 
     def get(self, request, note_id):
@@ -145,6 +158,8 @@ class ModifyView(View):
                                   region=request.user.region)
                 form.instance.top_image = url
 
+            # 修改后将状态改为未同步
+            form.instance.sync_status = False
             # 返回数据
             form.save()
 
@@ -153,10 +168,57 @@ class ModifyView(View):
         return render(request, 'editor.html', {'form': form})
 
 
-class DeleteView(View):
+class DeleteView(SyncIndex):
     """文章删除"""
 
     def get(self, request, note_id):
         Note.objects.filter(author=request.user, id=note_id).delete()
 
+        # 本站删除文章不对语雀平台做任何处理
+
         return redirect(reverse('blog:editor'))
+
+
+class SyncView(View):
+    """文章同步语雀平台"""
+
+    def get(self, request):
+        # 获取文章同步
+
+        note_id = request.GET.get('note_id', -1)
+
+        try:
+            note = Note.objects.filter(author=request.user, id=note_id).first()
+        except Note.DoesNotExist:
+            return JsonResponse({'msg': '文章不存在', 'code': 416})
+
+        # 同步语雀数据
+        client = YuQueConnect(settings.YUQUE_TOKEN, settings.HEADERS)
+
+        repos_slug = note.category.repos_slug
+        slug = ''.join(lazy_pinyin(note.category.name)) + str(note.id)
+        detail = {
+            "title": note.title,
+            "slug": slug,
+            "public": 0,
+            "body": note.content,
+        }
+
+        if not note.yuque:
+            # 创建文档库中文档
+            response = client.create_docs(repos_slug, **detail)
+        else:
+            # 修改文档库中文档
+            response = client.update_docs(repos_slug, note.yuque, **detail)
+
+        try:
+            yuque_id = response['data']['id']
+            print(response)
+        except KeyError:
+            return JsonResponse({'msg': '同步失败', 'code': 416})
+
+        note.yuque = yuque_id
+        note.sync_status = True
+        note.save()
+
+        return JsonResponse({'msg': '同步成功', 'code': 200})

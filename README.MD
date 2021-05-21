@@ -3,9 +3,10 @@
 ----
 
 ### 零、开始内容
-1.git
 
-    git clone https://gitee.com/bean_jun/person-blog.git
+1.git clone 项目
+
+    https://github.com/Bean-jun/PersonBlogSystem.git
 
 2.配置文件
 
@@ -29,6 +30,28 @@
         # 腾讯云对象存储
         TENCENT_SECRET_ID = 'xxx'
         TENCENT_SECRET_KEY = 'xxx'
+    
+        # 访客注册账号存储桶
+        TENCENT_BUCKET = 'PersonBlog-visitor-1305490799'
+        TENCENT_REGION = 'ap-shanghai'
+
+        # 语雀账户Token
+        YUQUE_TOKEN = "xxxxxxx"
+        
+        # 配置缓存
+        CACHES = {
+            "default": {
+                "BACKEND": "django_redis.cache.RedisCache",
+                "LOCATION": "redis://127.0.0.1:6379/1",
+                "OPTIONS": {
+                    "CLIENT_CLASS": "django_redis.client.DefaultClient",
+                }
+            }
+        }
+        
+        # 配置session存储到缓存中
+        SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+        SESSION_CACHE_ALIAS = "default"
 
     2.2 uwsgi.ini的配置
 
@@ -53,8 +76,8 @@
 
 3.nginx部分，百度下吧
 
-
 ### 一、基本操作
+
 1.关闭uwsgi
 
     uwsgi --stop uwsgi.pid
@@ -67,10 +90,8 @@
 
     uwsgi --ini uwsgi.ini
 
-
 ### 二、更新小站
 
     重复第一大步的三个基本操作，不过需要在1，2之间来上一个git pull即可
-
 
 ### 三、看看小站跑起来没
