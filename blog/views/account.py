@@ -6,7 +6,7 @@ from django.views import View
 from django.conf import settings
 from pypinyin import lazy_pinyin
 
-from blog.forms.account import RegisterForm, LoginForm
+from blog.forms.account import RegisterForm, LoginForm, ModifyPwdForm
 from blog.forms.category import CategoryModelForm
 from blog.forms.song import SongModelForm
 from blog.models import UserInfo, Note, Category, Song
@@ -60,6 +60,31 @@ class RegisterView(View):
             form.save()
 
             return JsonResponse({'code': 200})
+
+        return JsonResponse({'code': 416, 'msg': form.errors})
+
+
+class ModifyPassword(View):
+    """修改密码"""
+
+    def post(self, request):
+        form = ModifyPwdForm(request, data=request.POST)
+        if form.is_valid():
+            new_pwd = form.cleaned_data['new_pwd']
+
+            try:
+                user = UserInfo.objects.filter(id=request.user.id).first()
+            except UserInfo.DoesNotExist:
+                return JsonResponse({'code': 416, 'msg': "账号不存在"})
+
+            # 修改密码
+            user.password = new_pwd
+            user.save()
+
+            # 清理账户，重新登录
+            request.session.flush()
+
+            return JsonResponse({'code': 200, 'msg': "请重新登录账号！"})
 
         return JsonResponse({'code': 416, 'msg': form.errors})
 
@@ -157,12 +182,14 @@ class ProFileView(View):
         song = Song.objects.filter(user__is_super=True)  # 歌单展示
         form = CategoryModelForm(request)
         song_form = SongModelForm(request)
+        modify_form = ModifyPwdForm(request)
 
         context = {
             'category': category,
             'song': song,
             'form': form,
-            'song_form': song_form
+            'song_form': song_form,
+            'modify_form': modify_form
         }
 
         return render(request, 'profile.html', context)

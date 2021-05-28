@@ -64,6 +64,29 @@
                     }
                 });
             });
+            // 处理密码问题
+            $('#modify-pwd').on('show.bs.modal', function (e) {
+                var button = $(e.relatedTarget)
+                var name = button.data('name');
+                var modal = $(this);
+                modal.find('.modal-title').text(name);
+
+                // 清除错误数据
+                modal.find('.error-msg').empty();
+            });
+            // 提交修改密码表单
+            $('#modify-pwd-btn').click(function () {
+                $.post('{% url 'blog:modify_password' %}', $('#modify-pwd-Form').serialize(), function (data) {
+                    if (data.code === 200) {
+                        alert(data.msg);
+                        location.href = '{% url 'blog:profile' %}';
+                    } else {
+                        $.each(data.msg, function (key, value) {
+                            $('#id_' + key).next().text(value[0]);
+                        });
+                    }
+                });
+            });
         });
     </script>
 {% endblock js %}
@@ -109,6 +132,20 @@
         </div>
         {#        {% comment %}#}
         <div class="col-md-9 col-sm-8 right">
+            <!--
+            公有操作
+            - 修改密码
+            -->
+            <div class="page-header" style="margin: 60px 15px 50px;">
+                <h4>
+                    <span>账户设置</span>
+                    <span style="float: right;padding-left: 10px"><a class="btn btn-default" href="#" role="button"
+                                                                     data-toggle="modal" data-target="#modify-pwd"
+                                                                     data-name="修改密码">
+                            修改密码</a></span>
+                </h4>
+            </div>
+
             {% if request.user.is_super %}
                 {#管理员区域#}
                 <!--
@@ -175,7 +212,8 @@
                 <div class="page-header" style="margin: 60px 15px 20px;">
                     <h4>
                         <span>博客分类</span>
-                        <span style="float: right;padding-left: 10px"><a class="btn btn-default" href="{% url 'blog:editor' %}" role="button">
+                        <span style="float: right;padding-left: 10px"><a class="btn btn-default"
+                                                                         href="{% url 'blog:editor' %}" role="button">
                             添加博客</a></span>
 
                         <span style="float: right"><a class="btn btn-default" href="#" role="button"
@@ -255,6 +293,35 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
                     <button type="button" id="category" class="btn btn-primary">确 定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 密码修改 -->
+    <div class="modal fade" id="modify-pwd" tabindex="-1" role="dialog" aria-labelledby="modify-pwd">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="modify-pwd">Modal title</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="modify-pwd-Form">
+                        {% csrf_token %}
+                        {% for field in modify_form %}
+                            <div class="form-group">
+                                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                {{ field }}
+                                <span class="error-msg"></span>
+                            </div>
+                        {% endfor %}
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                    <button type="button" id="modify-pwd-btn" class="btn btn-primary">确 定</button>
                 </div>
             </div>
         </div>
