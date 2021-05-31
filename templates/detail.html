@@ -217,19 +217,28 @@
                 {% endfor %}
             </div>
             <div class="comments">
-                <form id="commentsForm" method="post">
-                    {% csrf_token %}
-                    {% for field in form %}
-                        <div class="form-group">
-                            {{ field }}
-                            <span class="error-msg">{{ field.errors.0 }}</span>
-                        </div>
-                    {% endfor %}
+                {% if request.user %}
+                    <form id="commentsForm" method="post">
+                        {% csrf_token %}
+                        {% for field in form %}
+                            <div class="form-group">
+                                {{ field }}
+                                <span class="error-msg">{{ field.errors.0 }}</span>
+                            </div>
+                        {% endfor %}
 
-                    <div class="form-group" style="float: right">
-                        <button type="button" class="btn btn-primary" id="comments-submit">发表</button>
+                        <div class="form-group" style="float: right">
+                            <button type="button" class="btn btn-primary" id="comments-submit">发表</button>
+                        </div>
+                    </form>
+                {% else %}
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            请<a href="{% url 'blog:login' %}">登录</a>后评论哦,没有账号？来<a
+                                href="{% url 'blog:register' %}">注册</a>一个属于你自己的账号吧！😉
+                        </div>
                     </div>
-                </form>
+                {% endif %}
             </div>
         </div>
     </div>
