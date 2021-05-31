@@ -33,6 +33,8 @@
     </script>
 {% endblock js %}
 
+{% block title %}详细{% endblock title %}
+
 
 {% block navbar %}
     <nav class="navbar navbar-inverse">
@@ -93,9 +95,9 @@
 {% endblock navbar %}
 {% block content %}
 
-        <div id="previewMarkdown" style="margin-bottom: 100px">
-            <textarea>{{ note.content }}</textarea>
-        </div>
+    <div id="previewMarkdown" style="margin-bottom: 100px">
+        <textarea>{{ note.content }}</textarea>
+    </div>
 
 
 {% endblock content %}

@@ -5,8 +5,8 @@
 
 {% block css %}
     <link rel="stylesheet" href="{% static 'plugin/editor-md/css/editormd.preview.min.css' %}">
-    <link rel="stylesheet" href="{% static 'css/home.css' %}">
-    <link rel="stylesheet" href="{% static 'css/account.css' %}">
+    <link rel="stylesheet" href="{% static 'css/blog/home.css' %}">
+    <link rel="stylesheet" href="{% static 'css/blog/account.css' %}">
 {% endblock css %}
 
 {% block js %}
@@ -92,7 +92,7 @@
 {% endblock js %}
 
 
-{% block title %}profile{% endblock title %}
+{% block title %}个人主页{% endblock title %}
 
 
 {% block content %}
@@ -156,7 +156,8 @@
                 <div class="page-header" style="margin: 60px 15px 50px;">
                     <h4>
                         <span>API</span>
-                        <span style="float: right;padding-left: 10px"><a class="btn btn-default" href="/v1/api/" role="button">
+                        <span style="float: right;padding-left: 10px"><a class="btn btn-default" href="/v1/api/"
+                                                                         role="button">
                             V1 API</a></span>
 
                         <span style="float: right"><a class="btn btn-default" href="/v1/api/docs/">
