@@ -52,9 +52,9 @@ class UserComment(models.Model):
     """用户评论"""
     user = models.ForeignKey('UserInfo', on_delete=models.CASCADE, verbose_name="用户")
     note = models.ForeignKey('Note', on_delete=models.CASCADE, verbose_name="笔记")
-    content = models.CharField(max_length=128, verbose_name="评论内容")
-    up = models.PositiveIntegerField(verbose_name="赞")
-    down = models.PositiveIntegerField(verbose_name='踩')
+    content = models.CharField(max_length=256, verbose_name="评论内容")
+    up = models.PositiveIntegerField(default=0, verbose_name="赞")
+    down = models.PositiveIntegerField(default=0, verbose_name='踩')
     create_datetime = models.DateTimeField(auto_now_add=True, verbose_name="评论时间")
     is_top = models.BooleanField(default=False, verbose_name="是否置顶")
 
