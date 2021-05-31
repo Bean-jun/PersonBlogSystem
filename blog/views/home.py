@@ -32,14 +32,3 @@ class CategoryListView(View):
         notes = Note.objects.filter(category_id=category_id).order_by('-create_datetime')
 
         return render(request, 'category_list.html', {'notes': notes})
-
-
-class DetailView(View):
-    """
-    博客详情
-    """
-
-    def get(self, request, article_id):
-        note = Note.objects.filter(id=article_id).first()
-
-        return render(request, 'detail.html', {'note': note})

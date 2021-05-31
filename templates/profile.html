@@ -130,12 +130,13 @@
             {% endif %}
 
         </div>
-        {#        {% comment %}#}
         <div class="col-md-9 col-sm-8 right">
             <!--
             公有操作
-            - 修改密码
+            1、修改密码
+            2、显示评论
             -->
+            <!--修改密码-->
             <div class="page-header" style="margin: 60px 15px 50px;">
                 <h4>
                     <span>账户设置</span>
@@ -145,12 +146,43 @@
                             修改密码</a></span>
                 </h4>
             </div>
+            <!--显示评论-->
+            <div class="comments-list">
+                <div class="page-header" style="margin: 40px 15px 20px;">
+                    <div>
+                        <h4>
+                            <span>历史评论</span>
+                        </h4>
+                    </div>
+
+                </div>
+                <table class="table table-condensed" style="margin-left: 15px;">
+                    <thead>
+                    <tr>
+                        <th>博客标题</th>
+                        <th>评论内容</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for item in userComment %}
+                        <tr>
+                            <td><a href="{% url 'blog:article' item.note.id %}"
+                                   style="text-decoration: none;color: black">
+                                {{ item.note.title }}
+                            </a></td>
+                            <td>{{ item.content }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
 
             {% if request.user.is_super %}
                 {#管理员区域#}
                 <!--
-                1、修改头像
+                1、api地址
                 2、修改音乐播放ID
+                3、博客分类
                 -->
                 <!--api接口地址-->
                 <div class="page-header" style="margin: 60px 15px 50px;">
@@ -165,6 +197,7 @@
                     </h4>
                 </div>
 
+                <!--修改音乐播放ID-->
                 <div class="page-header" style="margin: 40px 15px 20px;">
                     <div>
                         <h4>
@@ -210,6 +243,7 @@
                     </tbody>
                 </table>
 
+                <!--博客分类-->
                 <div class="page-header" style="margin: 60px 15px 20px;">
                     <h4>
                         <span>博客分类</span>
@@ -224,25 +258,18 @@
                     </h4>
                 </div>
                 <div style="margin: 40px 15px 20px;">
-                {% for item in category %}
-                    <div class="panel panel-default col-md-2" style="margin-bottom: 0">
-                        {# 链接到详细页 #}
-                        <a href="{% url 'blog:category' item.id %}" style="text-decoration: none; color: black">
-                            <div class="panel-body" style="text-align: center">
-                                {{ item.name|title }}
-                            </div>
-                        </a>
-                    </div>
-                {% endfor %}
-            {% else %}
-                {# 这里放置用户评论 #}
-                <!--
-                1、修改头像
-                2、查看评论过的文章
-                -->
+                    {% for item in category %}
+                        <div class="panel panel-default col-md-2" style="margin-bottom: 0">
+                            {# 链接到详细页 #}
+                            <a href="{% url 'blog:category' item.id %}" style="text-decoration: none; color: black">
+                                <div class="panel-body" style="text-align: center">
+                                    {{ item.name|title }}
+                                </div>
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
             {% endif %}
-            </div>
-            {#        {% endcomment %}#}
         </div>
     </div>
     <!-- 音乐添加栏 -->

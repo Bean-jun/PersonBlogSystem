@@ -9,7 +9,7 @@ from pypinyin import lazy_pinyin
 from blog.forms.account import RegisterForm, LoginForm, ModifyPwdForm
 from blog.forms.category import CategoryModelForm
 from blog.forms.song import SongModelForm
-from blog.models import UserInfo, Note, Category, Song
+from blog.models import UserInfo, UserComment, Category, Song
 from utils.cos import create_bucket, upload_file
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
@@ -180,6 +180,8 @@ class ProFileView(View):
 
         category = Category.objects.filter(user__is_super=True)
         song = Song.objects.filter(user__is_super=True)  # 歌单展示
+        userComment = UserComment.objects.filter(user=request.user). \
+            select_related('note').order_by('create_datetime')  # 用户评论
         form = CategoryModelForm(request)
         song_form = SongModelForm(request)
         modify_form = ModifyPwdForm(request)
@@ -188,6 +190,7 @@ class ProFileView(View):
             'category': category,
             'song': song,
             'form': form,
+            'userComment': userComment,
             'song_form': song_form,
             'modify_form': modify_form
         }

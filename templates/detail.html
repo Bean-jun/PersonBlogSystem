@@ -4,6 +4,11 @@
 {% block css %}
     {#    使用markdown必备样式#}
     <link rel="stylesheet" href="{% static 'plugin/editor-md/css/editormd.preview.min.css' %}">
+    <style>
+        .comments-list .row .col-sm-11 span {
+            margin-right: 40px;
+        }
+    </style>
 {% endblock css %}
 
 {% block js %}
@@ -21,6 +26,7 @@
     <script type="text/javascript">
         $(function () {
             previewMarkdown();
+            comments();
         })
 
         // 处理Markdown预览
@@ -30,10 +36,31 @@
                 htmlDecode: 'Style.script.iframe'
             });
         }
+
+        // 处理评论
+        function comments() {
+            $('#comments-submit').click(function () {
+                $.ajax({
+                    url: '{% url 'blog:comments' note.id %}',
+                    type: 'POST',
+                    data: $('#commentsForm').serialize()
+                }).done(function (data) {
+                    if (data.code === 200) {
+                        location.href = '{% url "blog:article" note.id %}';
+                    } else {
+                        $.each(data.msg, function (key, value) {
+                            $('#id_' + key).next().text(value[0])
+                        });
+                    }
+                }).fail(function () {
+                    console.log("网络连接超时");
+                })
+            });
+        }
     </script>
 {% endblock js %}
 
-{% block title %}详细{% endblock title %}
+{% block title %}博客详细{% endblock title %}
 
 
 {% block navbar %}
@@ -99,5 +126,111 @@
         <textarea>{{ note.content }}</textarea>
     </div>
 
+    <div class="panel panel-default" style="margin-bottom: 100px">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                评论区
+            </h3>
+        </div>
+        <div class="panel-body">
+            <div class="comments-list">
+                <!--置顶评论-->
+                {% for item in top_comments %}
+                    <div class="row">
+                        <div class="col-sm-1">
+                            <a class="navbar-brand" href="#">
+                                <img alt="user" width="30" height="30" style="border-radius: 50%"
+                                     src="{{ item.user.image }}">
+                            </a>
+                        </div>
+                        <div class="col-sm-11" style="margin-bottom: 20px">
+                            <div class="panel panel-default" style="margin-bottom: 4px">
+                                <div class="panel-body" style="padding: 4px; height: 40px">{{ item.content }}</div>
+                            </div>
+                            <span>
+                                <i class="fa fa-clock-o"
+                                   aria-hidden="true"></i> ：{{ item.create_datetime|date:'Y-m-d' }}
+                            </span>
+                            <span>
+                                <i class="fa fa-user-o" aria-hidden="true"></i> ：{{ item.user.username|capfirst }}
+                            </span>
+                            {% if request.user.is_super %}
+                                <a href="{% url 'blog:comments_operate' item.note.id item.id %}?not_top=1">
+                                    <span>
+                                        <i class="fa fa-caret-up" aria-hidden="true"></i> 取消置顶
+                                    </span>
+                                </a>
+                            {% endif %}
+                            <a href="{% url 'blog:comments_operate' item.note.id item.id %}?up=1">
+                                    <span>
+                                        <i class="fa fa-thumbs-o-up" aria-hidden="true"></i> 赞 {{ item.up }}
+                                    </span>
+                            </a>
+                            <a href="{% url 'blog:comments_operate' item.note.id item.id %}?down=1">
+                                    <span>
+                                        <i class="fa fa-thumbs-o-down" aria-hidden="true"></i> 踩 {{ item.down }}
+                                    </span>
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
 
+                <!--非置顶评论-->
+                {% for item in comments %}
+                    <div class="row">
+                        <div class="col-sm-1">
+                            <a class="navbar-brand" href="#">
+                                <img alt="user" width="30" height="30" style="border-radius: 50%"
+                                     src="{{ item.user.image }}">
+                            </a>
+                        </div>
+                        <div class="col-sm-11" style="margin-bottom: 20px">
+                            <div class="panel panel-default" style="margin-bottom: 4px">
+                                <div class="panel-body" style="padding: 4px; height: 40px">{{ item.content }}</div>
+                            </div>
+                            <span>
+                                <i class="fa fa-clock-o"
+                                   aria-hidden="true"></i> ：{{ item.create_datetime|date:'Y-m-d' }}
+                            </span>
+                            <span>
+                                <i class="fa fa-user-o" aria-hidden="true"></i> ：{{ item.user.username|capfirst }}
+                            </span>
+                            {% if request.user.is_super %}
+                                <a href="{% url 'blog:comments_operate' item.note.id item.id %}?top=1">
+                                    <span>
+                                        <i class="fa fa-caret-up" aria-hidden="true"></i> 置顶
+                                    </span>
+                                </a>
+                            {% endif %}
+                            <a href="{% url 'blog:comments_operate' item.note.id item.id %}?up=1">
+                                    <span>
+                                        <i class="fa fa-thumbs-o-up" aria-hidden="true"></i> 赞 {{ item.up }}
+                                    </span>
+                            </a>
+                            <a href="{% url 'blog:comments_operate' item.note.id item.id %}?down=1">
+                                    <span>
+                                        <i class="fa fa-thumbs-o-down" aria-hidden="true"></i> 踩 {{ item.down }}
+                                    </span>
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="comments">
+                <form id="commentsForm" method="post">
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <div class="form-group">
+                            {{ field }}
+                            <span class="error-msg">{{ field.errors.0 }}</span>
+                        </div>
+                    {% endfor %}
+
+                    <div class="form-group" style="float: right">
+                        <button type="button" class="btn btn-primary" id="comments-submit">发表</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 {% endblock content %}
