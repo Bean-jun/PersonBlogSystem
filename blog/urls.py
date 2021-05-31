@@ -1,5 +1,5 @@
 from django.urls import path
-from blog.views import home, account, editor
+from blog.views import home, account, editor, detail
 
 app_name = 'blog'
 
@@ -7,7 +7,11 @@ urlpatterns = [
     # 网站首页及详细页
     path('', home.IndexView.as_view(), name="index"),  # 网站首页
     path('category/<int:category_id>/', home.CategoryListView.as_view(), name="category"),  # 网站分类列表页
-    path('detail/<int:article_id>/', home.DetailView.as_view(), name="article"),  # 笔记详情
+    path('detail/<int:note_id>/', detail.DetailView.as_view(), name="article"),  # 笔记详情
+    path('detail/<int:note_id>/comments/', detail.CommentsView.as_view(), name="comments"),  # 笔记详情评论提交
+
+    # 笔记评论操作
+    path('detail/<int:note_id>/commentsOperate/<int:comment_id>/', detail.CommentsOperateView.as_view(), name="comments_operate"),
 
     # 账户注册登录部分
     path('register/', account.RegisterView.as_view(), name='register'),  # 用户注册
