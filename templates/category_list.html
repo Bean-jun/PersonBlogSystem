@@ -24,9 +24,11 @@
             </div>
         {% endfor %}
     </div>
-    <div aria-label="..." style="margin-bottom: 60px">
-        <ul class="pagination" style="margin-top: 0;">
-            {{ page_html|safe }}
-        </ul>
-    </div>
+    {% if count > 12 %}
+        <div aria-label="..." style="margin-bottom: 60px;float: right">
+            <ul class="pagination" style="margin-top: 0;">
+                {{ page_html|safe }}
+            </ul>
+        </div>
+    {% endif %}
 {% endblock content %}

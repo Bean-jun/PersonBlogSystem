@@ -1,6 +1,8 @@
 from django.shortcuts import render
+from django.urls import reverse
 from django.views import View
 from blog.models import Note, UserInfo
+from utils.pagination import Pagination
 from django.core.cache import cache
 
 
@@ -29,6 +31,19 @@ class CategoryListView(View):
         """
         图片缩略图-文章标题
         """
-        notes = Note.objects.filter(category_id=category_id).order_by('-create_datetime')
+        current_page = request.GET.get('page', 1)
+        note_obj = Note.objects.filter(category_id=category_id).order_by('-create_datetime')
+        note_page = Pagination(current_page=current_page,
+                               per_page=12,
+                               all_count=note_obj.count(),
+                               base_url=request.path,
+                               query_params=request.GET,
+                               pager_page_count=5)
 
-        return render(request, 'category_list.html', {'notes': notes})
+        notes = note_obj[note_page.start:note_page.end]
+
+        context = {'notes': notes,
+                   'count': note_obj.count(),
+                   'page_html': note_page.page_html()}
+
+        return render(request, 'category_list.html', context)
