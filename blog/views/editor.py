@@ -34,7 +34,7 @@ class EditorView(SyncIndex):
         notes = None
         try:
             category_id = int(editor_category_list_id)
-            notes = Note.objects.filter(category_id=category_id)
+            notes = Note.objects.filter(category_id=category_id).order_by('-create_datetime')
         except Exception as e:
             pass
 
