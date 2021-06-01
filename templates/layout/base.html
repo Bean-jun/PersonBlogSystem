@@ -61,7 +61,7 @@
             var windowHeight = $(window).height();
             var documentHeight = $(document).height();
             console.log(windowHeight + ':' + documentHeight);
-            if (windowHeight >= documentHeight) {
+            if (windowHeight+23 >= documentHeight) {
                 $('.footer').css({'position': 'fixed', 'height': 60});
             } else {
                 $('.footer').css({'position': 'absolute', 'height': 60});
