@@ -36,7 +36,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'blog',
+    'blog.apps.BlogConfig',
+    'api.apps.ApiConfig',
+    'oauth.apps.OauthConfig',
 ]
 
 MIDDLEWARE = [
@@ -137,6 +139,7 @@ VISITOR_WHITE_FUNCTION = [
     'logout',
     'profile',
     'category',
+    'oauth',
 ]
 
 # 访客注册账号存储桶
@@ -181,6 +184,11 @@ CACHES = {
 # 配置session存储到缓存中
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
+
+# 微博授权
+WEIBO_CLIENT_ID = "xxx"
+WEIBO_CLIENT_SECRET = "xxxx"
+WEIBO_CALL_BACK_URL = "/oauth/weibo/response"
 
 # 生成环境配置
 try:
