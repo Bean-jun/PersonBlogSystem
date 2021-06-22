@@ -110,7 +110,7 @@ class LoginView(View):
 
             if user:
                 # 用户登录成功，做session设置
-                request.session['user_id'] = user.id
+                request.session['user_id'] = [user.id, 'origin']
                 request.session.set_expiry(60 * 60 * 24 * 7)
 
                 return redirect(reverse("blog:index"))
