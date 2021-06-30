@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework_jwt',
     'blog.apps.BlogConfig',
     'api.apps.ApiConfig',
     'oauth.apps.OauthConfig',
@@ -140,6 +141,7 @@ VISITOR_WHITE_FUNCTION = [
     'profile',
     'category',
     'oauth',
+    'api',
 ]
 
 # 访客注册账号存储桶
@@ -158,6 +160,18 @@ REST_FRAMEWORK = {
 
     # 生成api文档
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
+
+    # 配置版本
+    "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.URLPathVersioning",
+    "ALLOWED_VERSIONS": ['v1'],
+}
+
+# JWT登录过期时间
+import datetime
+
+JWT_AUTH = {
+    # 登录超时时间
+    "JWT_EXPIRATION_DELTA": datetime.timedelta(hours=2),
 }
 
 # 请求头

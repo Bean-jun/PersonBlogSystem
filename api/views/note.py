@@ -1,6 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
 from api.serializer import NoteSerializer
 from blog import models as blog_models
+from api.auth.auth import LoginParamAuthentication
 
 
 class NoteAPIView(ModelViewSet):
@@ -22,3 +23,4 @@ class NoteAPIView(ModelViewSet):
     """
     queryset = blog_models.Note.objects.all()
     serializer_class = NoteSerializer
+    authentication_classes = [LoginParamAuthentication, ]
