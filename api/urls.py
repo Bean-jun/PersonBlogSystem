@@ -3,12 +3,14 @@ from rest_framework.routers import DefaultRouter
 
 from api.views.note import NoteAPIView
 from api.views.account import RegisterAPIView, LoginAPIView
+from api.views.temp_token import GetToken
 
 app_name = 'api'
 
 urlpatterns = [
     path('register/', RegisterAPIView.as_view()),
     path('login/', LoginAPIView.as_view()),
+    path('get_token/', GetToken.as_view()),
 ]
 
 # 接口路由
