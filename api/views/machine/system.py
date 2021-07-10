@@ -31,6 +31,7 @@ class SystemInfo(APIView):
             visitor_list = VisitorRecord.objects.all().order_by("-create_datetime").values_list('addr', 'host')[:3]
 
             # 获取天气信息
+            addr = request.query_params.get("addr", "武汉")
             weather_data = {
                 "status": False
             }
@@ -38,13 +39,12 @@ class SystemInfo(APIView):
 
             if weather is not None:
                 # 比较时间，时间太短不需要爬取，直接查询数据库即可
-                if weather.create_datetime + timedelta(hours=1) > datetime.now():
+                if weather.create_datetime + timedelta(hours=1) > datetime.now() and weather.city == addr:
                     # 查询数据库
                     weather_data["status"] = True
 
             if weather_data["status"] is False:
                 # 爬取最新数据
-                addr = request.query_params.get("addr", "武汉")
                 data = get_weather(addr)
 
                 weather = CityWeather.objects.create(city=addr,
