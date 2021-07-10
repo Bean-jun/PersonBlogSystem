@@ -6,12 +6,16 @@ from django.utils.deprecation import MiddlewareMixin
 from blog.models import UserInfo
 from oauth.models import UserInfoWeiBo
 from django.conf import settings
+from api.models import VisitorRecord
 
 
 class LoginMiddleware(MiddlewareMixin):
     """校验用户是否登录"""
 
     def process_request(self, request):
+        REMOTE_ADDR = request.META.get("REMOTE_ADDR")
+        REMOTE_HOST = request.META.get("REMOTE_HOST")
+        VisitorRecord.objects.create(addr=REMOTE_ADDR, host=REMOTE_HOST)
 
         # 匿名用户
         user = None
