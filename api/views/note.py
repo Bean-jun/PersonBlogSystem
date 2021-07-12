@@ -1,5 +1,5 @@
 from rest_framework.viewsets import ModelViewSet
-from api.serializer import NoteSerializer
+from api.serializer.note import NoteSerializer
 from blog import models as blog_models
 from api.auth.auth import LoginParamAuthentication
 

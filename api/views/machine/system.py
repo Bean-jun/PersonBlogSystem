@@ -13,6 +13,7 @@ from api.auth.auth import LoginParamAuthentication
 from django.conf import settings
 from blog.models import Note
 from api.models import VisitorRecord, CityWeather
+from api.serializer.machine import MachineSerializer
 from utils.weather import get_weather
 
 
@@ -31,7 +32,6 @@ class SystemInfo(APIView):
             visitor_list = VisitorRecord.objects.all().order_by("-create_datetime").values_list('addr', 'host')[:3]
 
             # 获取天气信息
-            addr = request.query_params.get("addr", "武汉")
             weather_data = {
                 "status": False
             }
@@ -39,12 +39,13 @@ class SystemInfo(APIView):
 
             if weather is not None:
                 # 比较时间，时间太短不需要爬取，直接查询数据库即可
-                if weather.create_datetime + timedelta(hours=1) > datetime.now() and weather.city == addr:
+                if weather.create_datetime + timedelta(hours=1) > datetime.now():
                     # 查询数据库
                     weather_data["status"] = True
 
             if weather_data["status"] is False:
                 # 爬取最新数据
+                addr = request.query_params.get("addr", "武汉")
                 data = get_weather(addr)
 
                 weather = CityWeather.objects.create(city=addr,
@@ -67,14 +68,21 @@ class SystemInfo(APIView):
                 "访问记录": visitor_list,
                 "天气情况": weather_data
             }
-            return Response({"msg": data, "status": 200})
+            return Response({"msg": data, "status": True})
         else:
-            return Response({"msg": "请使用管理员账号", "status": 400})
+            return Response({"msg": "请使用管理员账号", "status": False})
 
     def post(self, request, *args, **kwargs):
         """接受机器数据"""
+        # print(request.data)
 
         if request.user.email in settings.ADMIN_ACCOUNT:
-            return Response({"msg": 12, "status": 200})
+
+            serializer = MachineSerializer(data=request.data)
+
+            if serializer.is_valid():
+                serializer.save()
+                return Response({"msg": serializer.data, "status": True})
+            return Response({"msg": "数据格式错误", "status": False})
         else:
-            return Response({"msg": "请使用管理员账号", "status": 400})
+            return Response({"msg": "请使用管理员账号", "status": False})

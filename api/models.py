@@ -21,4 +21,8 @@ class CityWeather(models.Model):
 
 class Machine(models.Model):
     """机器状态信息"""
-    pass
+    name = models.CharField(max_length=256, verbose_name="备注")
+    platform = models.CharField(max_length=256, blank=True, null=True, verbose_name="平台")
+    version = models.CharField(max_length=256, blank=True, null=True, verbose_name="备注")
+    comment = models.CharField(max_length=256, default="", verbose_name="备注")
+    create_datetime = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
