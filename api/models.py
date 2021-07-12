@@ -4,7 +4,7 @@ from django.db import models
 class VisitorRecord(models.Model):
     """访客记录"""
     addr = models.CharField(max_length=16, verbose_name="远程主机IP")
-    host = models.CharField(max_length=32, verbose_name="远程主机名")
+    host = models.CharField(max_length=32, blank=True, null=True, verbose_name="远程主机名")
     create_datetime = models.DateTimeField(auto_now_add=True, verbose_name="访问时间")
 
 
