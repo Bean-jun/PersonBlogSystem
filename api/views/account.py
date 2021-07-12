@@ -2,7 +2,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_jwt.settings import api_settings
 
-from api.serializer import RegisterSerializer, LoginSerializer
+from api.serializer.account import RegisterSerializer, LoginSerializer
 
 
 class RegisterAPIView(APIView):

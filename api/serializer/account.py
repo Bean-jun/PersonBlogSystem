@@ -1,6 +1,7 @@
+from django.conf import settings
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
-from django.conf import settings
+
 from blog import models as blog_models
 from utils.encrypt import md5
 
@@ -54,14 +55,3 @@ class LoginSerializer(serializers.ModelSerializer):
         attrs['user'] = user
 
         return attrs
-
-
-class NoteSerializer(serializers.ModelSerializer):
-    """blog中Note序列化器"""
-    author = serializers.StringRelatedField(source='author.username')
-    category = serializers.StringRelatedField(source='category.name')
-    top_image = serializers.URLField()
-
-    class Meta:
-        model = blog_models.Note
-        fields = "__all__"
