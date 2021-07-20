@@ -9,3 +9,6 @@ blog_secret_key.py
 /setup.py
 /uwsgi.ini
 /deploy.txt
+
+# 日志文件
+/log/
