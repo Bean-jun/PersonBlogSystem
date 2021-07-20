@@ -1,12 +1,14 @@
 from datetime import datetime, timedelta
+
+from django.conf import settings
 from django.http import Http404
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.deprecation import MiddlewareMixin
-from blog.models import UserInfo
-from oauth.models import UserInfoWeiBo
-from django.conf import settings
-from api.models import VisitorRecord
+
+from apps.api.models import VisitorRecord
+from apps.blog.models import UserInfo
+from apps.oauth.models import UserInfoWeiBo
 
 
 class LoginMiddleware(MiddlewareMixin):

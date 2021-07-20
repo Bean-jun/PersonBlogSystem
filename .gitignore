@@ -2,6 +2,8 @@
 /.idea/
 __pycache__/
 blog_secret_key.py
+apps/*/migrations/*.py
+apps/!*/migrations/__init__.py
 */migrations/*.py
 !*/migrations/__init__.py
 /db.sqlite3
