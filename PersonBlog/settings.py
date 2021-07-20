@@ -204,6 +204,31 @@ WEIBO_CLIENT_ID = "xxx"
 WEIBO_CLIENT_SECRET = "xxxx"
 WEIBO_CALL_BACK_URL = "/oauth/weibo/response"
 
+# 配置日志
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'info': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': 'log/info.log',
+        },
+        'warning': {
+            'level': 'WARNING',
+            'class': 'logging.FileHandler',
+            'filename': 'log/warning.log',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['info', 'warning'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
+
 # 生成环境配置
 try:
     from setup import *
