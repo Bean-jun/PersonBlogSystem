@@ -37,9 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_jwt',
-    'blog.apps.BlogConfig',
-    'api.apps.ApiConfig',
-    'oauth.apps.OauthConfig',
+    'apps.blog.apps.BlogConfig',
+    'apps.api.apps.ApiConfig',
+    'apps.oauth.apps.OauthConfig',
 ]
 
 MIDDLEWARE = [
