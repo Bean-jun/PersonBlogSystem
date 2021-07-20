@@ -19,12 +19,15 @@ from rest_framework.documentation import include_docs_urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('blog.urls', namespace='blog')),  # 博客系统
-    path('oauth/', include('oauth.urls', namespace='auth')),  # 博客系统
+    path('', include('apps.blog.urls', namespace='blog')),  # 博客系统
+    path('oauth/', include('apps.oauth.urls', namespace='auth')),  # 博客系统
+    path('api/<str:version>/', include('apps.api.urls', namespace='api')),
 
     # V1版本api
-    path('v1/', include(([
-        path('api/', include('api.urls')),  # api
-        path('api/docs/', include_docs_urls(title="接口文档")),
-    ]))),
+    # path('v1/', include(
+    # ([
+    #     path('api/', include('api.urls')),  # api
+    #     path('api/docs/', include_docs_urls(title="接口文档")),
+    # ])
+    # )),
 ]

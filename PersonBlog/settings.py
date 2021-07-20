@@ -36,9 +36,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'blog.apps.BlogConfig',
-    'api.apps.ApiConfig',
-    'oauth.apps.OauthConfig',
+    'rest_framework_jwt',
+    'apps.blog.apps.BlogConfig',
+    'apps.api.apps.ApiConfig',
+    'apps.oauth.apps.OauthConfig',
 ]
 
 MIDDLEWARE = [
@@ -49,7 +50,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'blog.middleware.auth.LoginMiddleware',
+    'middleware.auth.LoginMiddleware',
 ]
 
 ROOT_URLCONF = 'PersonBlog.urls'
@@ -140,6 +141,7 @@ VISITOR_WHITE_FUNCTION = [
     'profile',
     'category',
     'oauth',
+    'api',
 ]
 
 # 访客注册账号存储桶
@@ -158,6 +160,18 @@ REST_FRAMEWORK = {
 
     # 生成api文档
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
+
+    # 配置版本
+    "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.URLPathVersioning",
+    "ALLOWED_VERSIONS": ['v1'],
+}
+
+# JWT登录过期时间
+import datetime
+
+JWT_AUTH = {
+    # 登录超时时间
+    "JWT_EXPIRATION_DELTA": datetime.timedelta(hours=2),
 }
 
 # 请求头
@@ -189,6 +203,31 @@ SESSION_CACHE_ALIAS = "default"
 WEIBO_CLIENT_ID = "xxx"
 WEIBO_CLIENT_SECRET = "xxxx"
 WEIBO_CALL_BACK_URL = "/oauth/weibo/response"
+
+# 配置日志
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'info': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': 'log/info.log',
+        },
+        'warning': {
+            'level': 'WARNING',
+            'class': 'logging.FileHandler',
+            'filename': 'log/warning.log',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['info', 'warning'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
 
 # 生成环境配置
 try:

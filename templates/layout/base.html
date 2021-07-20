@@ -1,6 +1,7 @@
 {% load static %}
 {% load profile %}
 {% load category_navigate %}
+{% load current_visual_people %}
 <!DOCTYPE html>
 <html lang="zh">
 <head>
@@ -58,14 +59,29 @@
     </style>
     <script type="text/javascript">
         $(function () {
+
+            // 设置页脚位置
             var windowHeight = $(window).height();
             var documentHeight = $(document).height();
             console.log(windowHeight + ':' + documentHeight);
-            if (windowHeight+23 >= documentHeight) {
+            if (windowHeight + 23 >= documentHeight) {
                 $('.footer').css({'position': 'fixed', 'height': 60});
             } else {
                 $('.footer').css({'position': 'absolute', 'height': 60});
             }
+
+            // 设置页脚时间戳
+            function siteTime() {
+                var e = 36e5, t = 24 * e, n = new Date, r = n.getFullYear(), a = n.getMonth() + 1,
+                    i = n.getDate(), l = n.getHours(), m = n.getMinutes(), M = n.getSeconds(),
+                    n = Date.UTC("2021", "4", "23", "0", "0", "0"), i = Date.UTC(r, a, i, l, m, M) - n,
+                    l = Math.floor(i / 31536e6), m = Math.floor(i / t - 365 * l),
+                    M = Math.floor((i - (365 * l + m) * t) / e), n = Math.floor((i - (365 * l + m) * t - M * e) / 6e4);
+                Math.floor((i - (365 * l + m) * t - M * e - 6e4 * n) / 1e3);
+                document.getElementById("current-date").innerHTML = "本站已存活 " + l + " 年 " + m + " 天 " + M + " 小时 "
+            }
+            setInterval(siteTime, 1e3)
+
         });
     </script>
     <title> {% block title %}{% endblock title %}</title>
@@ -147,6 +163,8 @@
         <a href="https://beian.miit.gov.cn" target="_blank">
             鄂ICP备2021007126号
         </a>
+        <span id="current-date" style="color: #f09393; margin-left: 100px"></span>
+        {% current_visual request %}
     </div>
 {% endblock footer %}
 </body>
