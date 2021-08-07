@@ -1,15 +1,24 @@
 # 个人博客
 
+
+**重要更新：**
+**该项目的Flask版本正在制作中，欢迎大家发issues！**
+**地址:```https://github.com/Bean-jun/PersonBlogSystemFlask.git```**
+
+
 ## 一、 食用指南
 
 ### 0. 开始内容
 
-0.1 git clone 项目
+- 0.1 git clone 项目
 
-`git clone https://github.com/Bean-jun/PersonBlogSystem.git`
+    ```shell
+    git clone https://github.com/Bean-jun/PersonBlogSystem.git
+    ```
 
-0.2 配置文件
+- 0.2 配置文件
 
+    ```shell
     0.2.1 django项目的settings配置
     
     这部分直接放在setup.py文件最佳，方便后期直接更新blog
@@ -73,22 +82,29 @@
         check-static = 'xxx'
         # =前面的/static是uWSGI的URL前缀，而后面的/srv/django/static则是静态文件的路径。 这个路径，通常使用绝对路径，但也支持相对路径。
         static-map = 'xxx'
+    ```
 
-0.3 nginx部分，百度下吧
+- 0.3 nginx部分，百度下吧
 
 ### 1. 基本操作
 
-1.1 关闭uwsgi
+- 1.1 关闭uwsgi
 
+    ```shell
     uwsgi --stop uwsgi.pid
+    ```
 
-1.2 搜集静态文件
+- 1.2 搜集静态文件
 
+    ```shell
     python3 manage.py collectstatic
+    ```
 
-1.3 启动uwsgi
+- 1.3 启动uwsgi
 
+    ```shell
     uwsgi --ini uwsgi.ini
+    ```
 
 ### 2. 更新小站
 
@@ -149,6 +165,6 @@
 - 管理员添加主页音乐权限 √
 - 管理员其他接口集成 √
 
-### 6. todo
+### 6. 通用接口
 
-- ...
+- 机器数据上传及下载 √
