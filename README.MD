@@ -1,10 +1,14 @@
 # 个人博客
 
-
 **重要更新：**
+
 **该项目的Flask版本正在制作中，欢迎大家发issues！**
+
+**初版blog功能上线啦**
+
 **地址:```https://github.com/Bean-jun/PersonBlogSystemFlask.git```**
 
+**消息提前放送：这个django版本的我会打tag，后面会将SimpleSaaS集成到这里面来哦~**
 
 ## 一、 食用指南
 
