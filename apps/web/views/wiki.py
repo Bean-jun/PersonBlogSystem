@@ -107,7 +107,7 @@ def wiki_upload_img(request, project_id):
 
     # 图片名称
     file_end = image_obj.name.rsplit('.')[-1]
-    key = '{}.{}'.format(file_uid(request.tracer.user.mobile_phone), file_end)
+    key = '{}.{}'.format(file_uid(request.tracer.user.id), file_end)
 
     # 上传图片
     context['url'] = upload_file(bucket=request.tracer.project.bucket,

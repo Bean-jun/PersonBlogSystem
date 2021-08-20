@@ -370,7 +370,7 @@ def invite_url(request, project_id):
             form.add_error('period', "无权创建邀请码")
             return JsonResponse({'code': 416, 'error': form.errors})
 
-        random_invite_code = uid(request.tracer.user.mobile_phone)
+        random_invite_code = uid(request.tracer.user.id)
         form.instance.project = request.tracer.project
         form.instance.code = random_invite_code
         form.instance.create_user = request.tracer.user

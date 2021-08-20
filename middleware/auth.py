@@ -9,6 +9,7 @@ from django.utils.deprecation import MiddlewareMixin
 from apps.api.models import VisitorRecord
 from apps.blog.models import UserInfo
 from apps.oauth.models import UserInfoWeiBo
+from apps.web.models import Transaction, ProjectUser, Project
 
 
 class Tracer:
@@ -53,6 +54,17 @@ class LoginMiddleware(MiddlewareMixin):
         request.user = user
         request.tracer.user = user
 
+        # 获取用户最近的一次交易记录，ID值越大越近
+        _object = Transaction.objects.filter(user=user, status=2).order_by('-id').first()
+
+        # 判断权限已经过期
+        current_datetime = datetime.now()
+        if _object.end_time and _object.end_time < current_datetime:
+            # 账户权限过期
+            _object = Transaction.objects.filter(user=user, status=2, price_policy__category=1).first()
+
+        request.tracer.price_policy = _object.price_policy
+
     def process_view(self, request, view, args, kwargs):
         """非管理员或者未登录用户，只能看白名单页面"""
         try:
@@ -61,3 +73,24 @@ class LoginMiddleware(MiddlewareMixin):
                     return redirect(reverse('blog:index'))
         except Exception as e:
             raise Http404
+
+        # 项目路径
+        if not request.path.startswith('/service/manage/'):
+            return
+
+        # 项目ID
+        project_id = kwargs.get('project_id')
+
+        # 判断是否为我创建或者我参加的
+        project_obj = Project.objects.filter(create_user=request.tracer.user, id=project_id).first()
+        if project_obj:
+            request.tracer.project = project_obj
+            return
+
+        project_user_obj = ProjectUser.objects.filter(user=request.tracer.user, id=project_id).first()
+        if project_user_obj:
+            request.tracer.project = project_user_obj.project
+            return
+
+        # 若是都不满足，重定向到项目管理页面
+        return redirect(reverse('service:project_list'))

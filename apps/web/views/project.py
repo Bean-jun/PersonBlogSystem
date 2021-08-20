@@ -63,7 +63,7 @@ def project_list(request):
             # 验证成功： 数据库需要存储项目名，颜色，描述，创建者
 
             # 为创建项目的用户创建桶
-            bucket = f"saas-{request.tracer.user.mobile_phone}-{int(100 * time.time())}-1305490799"
+            bucket = f"saas-{request.tracer.user.id}-{int(100 * time.time())}-1305490799"
             create_bucket(bucket)
             form.instance.bucket = bucket
             form.instance.region = 'ap-shanghai'

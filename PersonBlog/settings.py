@@ -143,6 +143,7 @@ VISITOR_WHITE_FUNCTION = [
     'category',
     'oauth',
     'api',
+    'service',
 ]
 
 # 访客注册账号存储桶

@@ -1,4 +1,5 @@
 import time
+import uuid
 
 from django.conf import settings
 from django.http import JsonResponse
@@ -14,7 +15,7 @@ from apps.blog.forms.category import CategoryModelForm
 from apps.blog.forms.price_policy import PricePolicyForm
 from apps.blog.forms.song import SongModelForm
 from apps.blog.models import UserInfo, UserComment, Category, Song
-from apps.web.models import PricePolicy
+from apps.web.models import PricePolicy, Transaction
 from utils.cos import create_bucket, upload_file
 from utils.yuque_sync import YuQueConnect
 
@@ -53,13 +54,33 @@ class RegisterView(View):
                     create_bucket(bucket)
                 except Exception as e:
                     pass
+
+                # 获取产品价格策略-最大策略组合
+                price_policy = PricePolicy.objects.all().order_by("-create_project")[0]
             else:
                 form.instance.is_super = False  # 任何用户注册都是普通用户
 
                 form.instance.bucket = settings.TENCENT_BUCKET
                 form.instance.region = settings.TENCENT_REGION
 
-            form.save()
+                # 获取产品价格策略
+                price_policy = PricePolicy.objects.filter(category=1).first()
+
+            instance = form.save()
+
+            # 添加免费版权限
+            from datetime import datetime
+
+            # 添加权限交易记录
+            start_time = datetime.now()
+            Transaction.objects.create(status=2,
+                                       user=instance,
+                                       price_policy=price_policy,
+                                       pay_price=0,
+                                       count=0,
+                                       start_time=start_time,
+                                       order=str(uuid.uuid4()),  # 产生随机字符串
+                                       create_time=start_time)
 
             return JsonResponse({'code': 200})
 
