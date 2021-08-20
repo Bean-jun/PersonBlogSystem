@@ -56,7 +56,7 @@ class EditorView(SyncIndex):
             'notes': notes,
         }
 
-        return render(request, 'editor.html', context)
+        return render(request, 'blog/editor.html', context)
 
     def post(self, request):
         form = NoteForm(request, data=request.POST, files=request.FILES)
@@ -77,7 +77,7 @@ class EditorView(SyncIndex):
 
             return redirect(reverse('blog:editor'))
 
-        return render(request, 'editor.html', {'form': form})
+        return render(request, 'blog/editor.html', {'form': form})
 
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -135,7 +135,7 @@ class ModifyView(SyncIndex):
             'category_list': category_list,
         }
 
-        return render(request, 'editor.html', context)
+        return render(request, 'blog/editor.html', context)
 
     def post(self, request, note_id):
         note = Note.objects.get(author=request.user, id=note_id)
@@ -164,7 +164,7 @@ class ModifyView(SyncIndex):
 
             return redirect(reverse('blog:editor'))
 
-        return render(request, 'editor.html', {'form': form})
+        return render(request, 'blog/editor.html', {'form': form})
 
 
 class DeleteView(SyncIndex):

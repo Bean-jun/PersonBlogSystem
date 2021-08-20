@@ -11,10 +11,22 @@ from apps.blog.models import UserInfo
 from apps.oauth.models import UserInfoWeiBo
 
 
+class Tracer:
+    """封装user和price_policy的数据，便于视图函数访问"""
+
+    def __init__(self):
+        self.user = None
+        self.price_policy = None
+        self.project = None  # 将项目进行封装
+
+
 class LoginMiddleware(MiddlewareMixin):
     """校验用户是否登录"""
 
     def process_request(self, request):
+
+        request.tracer = Tracer()
+
         REMOTE_ADDR = request.META.get("REMOTE_ADDR")
         REMOTE_HOST = request.META.get("REMOTE_HOST")
         VisitorRecord.objects.create(addr=REMOTE_ADDR, host=REMOTE_HOST)
@@ -39,6 +51,7 @@ class LoginMiddleware(MiddlewareMixin):
 
         # 将获取到的用户放置在request中
         request.user = user
+        request.tracer.user = user
 
     def process_view(self, request, view, args, kwargs):
         """非管理员或者未登录用户，只能看白名单页面"""

@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'apps.blog.apps.BlogConfig',
     'apps.api.apps.ApiConfig',
     'apps.oauth.apps.OauthConfig',
+    'apps.web.apps.WebConfig',
 ]
 
 MIDDLEWARE = [

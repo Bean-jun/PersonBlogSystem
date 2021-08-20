@@ -11,8 +11,10 @@ from pypinyin import lazy_pinyin
 
 from apps.blog.forms.account import RegisterForm, LoginForm, ModifyPwdForm
 from apps.blog.forms.category import CategoryModelForm
+from apps.blog.forms.price_policy import PricePolicyForm
 from apps.blog.forms.song import SongModelForm
 from apps.blog.models import UserInfo, UserComment, Category, Song
+from apps.web.models import PricePolicy
 from utils.cos import create_bucket, upload_file
 from utils.yuque_sync import YuQueConnect
 
@@ -24,7 +26,7 @@ class RegisterView(View):
 
         form = RegisterForm()
 
-        return render(request, 'register.html', {'form': form})
+        return render(request, 'blog/register.html', {'form': form})
 
     def post(self, request):
 
@@ -96,7 +98,7 @@ class LoginView(View):
 
         form = LoginForm()
 
-        return render(request, 'login.html', {'form': form})
+        return render(request, 'blog/login.html', {'form': form})
 
     def post(self, request):
         form = LoginForm(request.POST)
@@ -118,7 +120,7 @@ class LoginView(View):
                 # 用户密码错误
                 form.add_error('email', '邮箱或者密码错误')
 
-        return render(request, 'login.html', {'form': form})
+        return render(request, 'blog/login.html', {'form': form})
 
 
 class LogoutView(View):
@@ -185,6 +187,8 @@ class ProFileView(View):
         form = CategoryModelForm(request)
         song_form = SongModelForm(request)
         modify_form = ModifyPwdForm(request)
+        price_form = PricePolicyForm()
+        price_policy = PricePolicy.objects.all()
 
         context = {
             'category': category,
@@ -192,10 +196,12 @@ class ProFileView(View):
             'form': form,
             'userComment': userComment,
             'song_form': song_form,
-            'modify_form': modify_form
+            'modify_form': modify_form,
+            'price_form': price_form,
+            'price_policy': price_policy
         }
 
-        return render(request, 'profile.html', context)
+        return render(request, 'blog/profile.html', context)
 
     def post(self, request):
         # 添加博客标签
@@ -227,6 +233,18 @@ class ProFileView(View):
                 return JsonResponse({'msg': 'ok', 'code': 200})
 
         return JsonResponse({'msg': form.errors, 'code': 416})
+
+
+class SetPricePolicyView(View):
+    """设置价格策略"""
+
+    def post(self, request):
+        r = PricePolicyForm(request.POST)
+        if r.is_valid():
+            r.save()
+            return JsonResponse({'code': 200, 'msg': "设置完成！"})
+
+        return JsonResponse({'msg': r.errors, 'code': 416})
 
 
 @method_decorator(csrf_exempt, name='dispatch')

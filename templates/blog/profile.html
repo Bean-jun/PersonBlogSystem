@@ -2,6 +2,8 @@
 {% load netease %}
 {% load profile %}
 {% load static %}
+{% load space %}
+
 
 {% block css %}
     <link rel="stylesheet" href="{% static 'plugin/editor-md/css/editormd.preview.min.css' %}">
@@ -87,6 +89,28 @@
                     }
                 });
             });
+            // 处理价格策略
+            $('#setPrice').on('show.bs.modal', function (e) {
+                var button = $(e.relatedTarget)
+                var name = button.data('name');
+                var modal = $(this);
+                modal.find('.modal-title').text(name);
+
+                // 清除错误数据
+                modal.find('.error-msg').empty();
+            });
+            $('#setPrice-btn').click(function () {
+                $.post("{% url 'blog:setPrice' %}", $('#setPrice-Form').serialize(), function (data) {
+                    if (data.code === 200) {
+                        alert(data.msg);
+                        location.href = "{% url 'blog:profile' %}";
+                    } else {
+                        $.each(data.msg, function (key, value) {
+                            $('#id_' + key).next().text(value[0]);
+                        });
+                    }
+                });
+            });
         });
     </script>
 {% endblock js %}
@@ -140,6 +164,11 @@
             <div class="page-header" style="margin: 60px 15px 50px;">
                 <h4>
                     <span>账户设置</span>
+                    {#进入SaaS平台#}
+                    <span style="float: right;padding-left: 10px"><a class="btn btn-default"
+                                                                     href="{% url 'service:project_list' %}"
+                                                                     role="button"> 进入SaaS服务</a></span>
+
                     <span style="float: right;padding-left: 10px"><a class="btn btn-default" href="#" role="button"
                                                                      data-toggle="modal" data-target="#modify-pwd"
                                                                      data-name="修改密码">
@@ -194,6 +223,43 @@
                     </h4>
                 </div>
 
+                <!--价格策略-->
+                <div class="page-header" style="margin: 60px 15px 6px;">
+                    <h4>
+                        <span>价格策略</span>
+                        <span style="float: right;padding-left: 10px"><a class="btn btn-default" href="#" role="button"
+                                                                         data-toggle="modal" data-target="#setPrice"
+                                                                         data-name="添加策略">
+                            修改策略</a></span>
+                    </h4>
+                </div>
+
+                <table class="table table-condensed" style="margin-left: 15px;">
+                    <thead>
+                    <tr style="text-align: center">
+                        <th>类型</th>
+                        <th>标题</th>
+                        <th>项目数量</th>
+                        <th>成员数量</th>
+                        <th>项目空间</th>
+                        <th>单文件空间</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for item in price_policy %}
+                        <tr>
+                            <td>{{ item.get_category_display }}</td>
+                            <td>{{ item.title }}</td>
+                            <td>{{ item.create_project }}</td>
+                            <td>{{ item.project_member }}</td>
+                            <td>{% use_space_policy item.project_space %}</td>
+                            <td>{% use_space_policy item.single_file_space %}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+
                 <!--修改音乐播放ID-->
                 <div class="page-header" style="margin: 40px 15px 20px;">
                     <div>
@@ -202,7 +268,7 @@
                             <span style="float: right"><a class="btn btn-default" href="#" role="button"
                                                           data-toggle="modal" data-target="#addModalSong"
                                                           data-name="添加音乐">
-                                添加音乐</a></span>
+                                                添加音乐</a></span>
                         </h4>
                     </div>
 
@@ -347,6 +413,35 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
                     <button type="button" id="modify-pwd-btn" class="btn btn-primary">确 定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--设置价格策略-->
+    <div class="modal fade" id="setPrice" tabindex="-1" role="dialog" aria-labelledby="setPrice">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="setPrice">Modal title</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="setPrice-Form">
+                        {% csrf_token %}
+                        {% for field in price_form %}
+                            <div class="form-group">
+                                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                {{ field }}
+                                <span class="error-msg"></span>
+                            </div>
+                        {% endfor %}
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                    <button type="button" id="setPrice-btn" class="btn btn-primary">确 定</button>
                 </div>
             </div>
         </div>
