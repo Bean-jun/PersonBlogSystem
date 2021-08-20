@@ -54,16 +54,17 @@ class LoginMiddleware(MiddlewareMixin):
         request.user = user
         request.tracer.user = user
 
-        # 获取用户最近的一次交易记录，ID值越大越近
-        _object = Transaction.objects.filter(user=user, status=2).order_by('-id').first()
+        if user:
+            # 获取用户最近的一次交易记录，ID值越大越近
+            _object = Transaction.objects.filter(user=user, status=2).order_by('-id').first()
 
-        # 判断权限已经过期
-        current_datetime = datetime.now()
-        if _object.end_time and _object.end_time < current_datetime:
-            # 账户权限过期
-            _object = Transaction.objects.filter(user=user, status=2, price_policy__category=1).first()
+            # 判断权限已经过期
+            current_datetime = datetime.now()
+            if _object.end_time and _object.end_time < current_datetime:
+                # 账户权限过期
+                _object = Transaction.objects.filter(user=user, status=2, price_policy__category=1).first()
 
-        request.tracer.price_policy = _object.price_policy
+            request.tracer.price_policy = _object.price_policy
 
     def process_view(self, request, view, args, kwargs):
         """非管理员或者未登录用户，只能看白名单页面"""
