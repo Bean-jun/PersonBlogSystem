@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'apps.blog.apps.BlogConfig',
     'apps.api.apps.ApiConfig',
     'apps.oauth.apps.OauthConfig',
+    'apps.web.apps.WebConfig',
 ]
 
 MIDDLEWARE = [
@@ -142,6 +143,7 @@ VISITOR_WHITE_FUNCTION = [
     'category',
     'oauth',
     'api',
+    'service',
 ]
 
 # 访客注册账号存储桶

@@ -25,7 +25,7 @@ class IndexView(View):
             }
             cache.set('index', context, 60 * 60 * 2)
 
-        return render(request, 'home.html', context)
+        return render(request, 'blog/home.html', context)
 
 
 class CategoryListView(View):
@@ -50,4 +50,4 @@ class CategoryListView(View):
                    'count': note_obj.count(),
                    'page_html': note_page.page_html()}
 
-        return render(request, 'category_list.html', context)
+        return render(request, 'blog/category_list.html', context)
