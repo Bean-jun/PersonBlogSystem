@@ -24,7 +24,7 @@ class DetailView(View):
             'top_comments': top_comments,
             'comments': comments,
         }
-        return render(request, 'detail.html', context)
+        return render(request, 'blog/detail.html', context)
 
 
 class CommentsView(View):

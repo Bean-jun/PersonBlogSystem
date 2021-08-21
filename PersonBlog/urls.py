@@ -21,6 +21,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('apps.blog.urls', namespace='blog')),  # 博客系统
     path('oauth/', include('apps.oauth.urls', namespace='auth')),  # 博客系统
+    path('service/', include('apps.web.urls', namespace='service')),  # SaaS系统
     path('api/<str:version>/', include('apps.api.urls', namespace='api')),
 
     # V1版本api

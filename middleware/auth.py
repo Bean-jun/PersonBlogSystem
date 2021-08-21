@@ -9,12 +9,25 @@ from django.utils.deprecation import MiddlewareMixin
 from apps.api.models import VisitorRecord
 from apps.blog.models import UserInfo
 from apps.oauth.models import UserInfoWeiBo
+from apps.web.models import Transaction, ProjectUser, Project
+
+
+class Tracer:
+    """封装user和price_policy的数据，便于视图函数访问"""
+
+    def __init__(self):
+        self.user = None
+        self.price_policy = None
+        self.project = None  # 将项目进行封装
 
 
 class LoginMiddleware(MiddlewareMixin):
     """校验用户是否登录"""
 
     def process_request(self, request):
+
+        request.tracer = Tracer()
+
         REMOTE_ADDR = request.META.get("REMOTE_ADDR")
         REMOTE_HOST = request.META.get("REMOTE_HOST")
         VisitorRecord.objects.create(addr=REMOTE_ADDR, host=REMOTE_HOST)
@@ -39,6 +52,19 @@ class LoginMiddleware(MiddlewareMixin):
 
         # 将获取到的用户放置在request中
         request.user = user
+        request.tracer.user = user
+
+        # if user:
+        # 获取用户最近的一次交易记录，ID值越大越近
+        # _object = Transaction.objects.filter(user=user, status=2).order_by('-id').first()
+
+        # 判断权限已经过期
+        # current_datetime = datetime.now()
+        # if _object.end_time and _object.end_time < current_datetime:
+        #     # 账户权限过期
+        #     _object = Transaction.objects.filter(user=user, status=2, price_policy__category=1).first()
+
+        # request.tracer.price_policy = _object.price_policy
 
     def process_view(self, request, view, args, kwargs):
         """非管理员或者未登录用户，只能看白名单页面"""
@@ -48,3 +74,36 @@ class LoginMiddleware(MiddlewareMixin):
                     return redirect(reverse('blog:index'))
         except Exception as e:
             raise Http404
+
+        # 项目路径
+        if request.path.startswith('/service/project/'):
+            # 处理项目策略--用户拥有的
+            _object = Transaction.objects.filter(user=request.user, status=2).order_by('-id').first()
+            request.tracer.price_policy = _object.price_policy
+            return
+
+        if not request.path.startswith('/service/manage/'):
+            return
+
+        # 项目ID
+        project_id = kwargs.get('project_id')
+
+        # 处理项目策略--用户加入的项目的权限
+        _object = Project.objects.filter(id=project_id).first().create_user.transaction_set.order_by(
+            '-create_time').first()
+
+        request.tracer.price_policy = _object.price_policy
+
+        # 判断是否为我创建或者我参加的
+        project_obj = Project.objects.filter(create_user=request.tracer.user, id=project_id).first()
+        if project_obj:
+            request.tracer.project = project_obj
+            return
+
+        project_user_obj = ProjectUser.objects.filter(user=request.tracer.user, project_id=project_id).first()
+        if project_user_obj:
+            request.tracer.project = project_user_obj.project
+            return
+
+        # 若是都不满足，重定向到项目管理页面
+        return redirect(reverse('service:project_list'))

@@ -1,6 +1,7 @@
 from django.conf import settings
 import hashlib
 import random
+import uuid
 
 
 def md5(string):
@@ -23,3 +24,15 @@ def decr_salt(string):
     _ = [data for i, data in enumerate(string) if i % 2 == 0]
     res = "".join(_)
     return res
+
+
+def file_uid(value):
+    """文件名"""
+    _uid = "{}666{}".format(str(uuid.uuid4()), value)
+    return md5(_uid)
+
+
+def uid(value):
+    """邀请链接"""
+    _uid = "{}-{}".format(str(uuid.uuid4()), value)
+    return md5(_uid)
