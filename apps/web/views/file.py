@@ -117,17 +117,19 @@ def file_delete(request, project_id):
                                                            child=folder).order_by('-file_type')
 
                 for child in child_list:
-                    if child.file_type == 1:
+                    if child.file_type == 2:
                         # 表示文件夹
                         folder_list.append(child)
                     else:
                         # 表示是文件
                         total_size += child.file_size
                         key_list.append({"Key": child.key})
-            # 删除文件
-            delete_file_list(bucket=request.tracer.project.bucket,
-                             key_list=key_list,
-                             region=request.tracer.project.region)
+
+            if key_list:
+                # 删除文件
+                delete_file_list(bucket=request.tracer.project.bucket,
+                                 key_list=key_list,
+                                 region=request.tracer.project.region)
 
             # 释放空间
             request.tracer.project.use_space -= total_size

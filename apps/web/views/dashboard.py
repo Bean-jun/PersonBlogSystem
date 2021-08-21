@@ -48,7 +48,7 @@ def issues_chart(request, project_id):
     # 获取最近30天的问题创建数量
     res = Issues.objects.filter(project_id=project_id,
                                 create_datetime__gte=today - datetime.timedelta(days=30)
-                                ).extra(select={'ctime': "strftime('%%Y-%%m-%%d', web_issues.create_datetime)"}
+                                ).extra(select={'ctime': "DATE_FORMAT(web_issues.create_datetime,'%%Y-%%m-%%d')"}
                                         ).values('ctime').annotate(ct=Count('id'))
 
     for item in res:
