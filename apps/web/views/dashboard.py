@@ -27,15 +27,10 @@ def dashboard(request, project_id):
     # 最近问题
     top_ten = Issues.objects.filter(project_id=project_id, assign__isnull=False).order_by('-id')[0:10]
 
-    # 项目空间
-    all_space = Project.objects.filter(id=project_id).first().create_user.transaction_set.order_by(
-        '-create_time').first().price_policy.project_space
-
     context = {
         'status_dict': status_dict,
         'user_list': user_list,
         'top_ten_object': top_ten,
-        'all_space': all_space
     }
 
     return render(request, 'web/dashboard.html', context)

@@ -54,17 +54,17 @@ class LoginMiddleware(MiddlewareMixin):
         request.user = user
         request.tracer.user = user
 
-        if user:
-            # 获取用户最近的一次交易记录，ID值越大越近
-            _object = Transaction.objects.filter(user=user, status=2).order_by('-id').first()
+        # if user:
+        # 获取用户最近的一次交易记录，ID值越大越近
+        # _object = Transaction.objects.filter(user=user, status=2).order_by('-id').first()
 
-            # 判断权限已经过期
-            # current_datetime = datetime.now()
-            # if _object.end_time and _object.end_time < current_datetime:
-            #     # 账户权限过期
-            #     _object = Transaction.objects.filter(user=user, status=2, price_policy__category=1).first()
+        # 判断权限已经过期
+        # current_datetime = datetime.now()
+        # if _object.end_time and _object.end_time < current_datetime:
+        #     # 账户权限过期
+        #     _object = Transaction.objects.filter(user=user, status=2, price_policy__category=1).first()
 
-            request.tracer.price_policy = _object.price_policy
+        # request.tracer.price_policy = _object.price_policy
 
     def process_view(self, request, view, args, kwargs):
         """非管理员或者未登录用户，只能看白名单页面"""
@@ -76,11 +76,23 @@ class LoginMiddleware(MiddlewareMixin):
             raise Http404
 
         # 项目路径
+        if request.path.startswith('/service/project/'):
+            # 处理项目策略--用户拥有的
+            _object = Transaction.objects.filter(user=request.user, status=2).order_by('-id').first()
+            request.tracer.price_policy = _object.price_policy
+            return
+
         if not request.path.startswith('/service/manage/'):
             return
 
         # 项目ID
         project_id = kwargs.get('project_id')
+
+        # 处理项目策略--用户加入的项目的权限
+        _object = Project.objects.filter(id=project_id).first().create_user.transaction_set.order_by(
+            '-create_time').first()
+
+        request.tracer.price_policy = _object.price_policy
 
         # 判断是否为我创建或者我参加的
         project_obj = Project.objects.filter(create_user=request.tracer.user, id=project_id).first()

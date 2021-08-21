@@ -145,6 +145,7 @@ def cos_credentials(request, project_id):
     # 文件大小限制
     file_list = json.loads(request.body.decode('utf-8'))
 
+    # bug 他人创建的项目文件限制不能限制加入用户~在中间件中对price_policy进行重新封装
     # 单文件最大限制
     single_file_max = request.tracer.price_policy.single_file_space * 1024 * 1024
     # 项目总文件大小限制
