@@ -106,12 +106,11 @@ def wiki_upload_img(request, project_id):
         return JsonResponse(context)
 
     # 图片名称
-    file_end = image_obj.name.rsplit('.')[-1]
-    key = '{}.{}'.format(file_uid(request.tracer.user.id), file_end)
+    # file_end = image_obj.name.rsplit('.')[-1]
+    # key = '{}.{}'.format(file_uid(request.tracer.user.id), file_end)
 
     # 上传图片
     context['url'] = upload_file(bucket=request.tracer.project.bucket,
-                                 key=key,
                                  image_obj=image_obj,
                                  region=request.tracer.project.region)
 

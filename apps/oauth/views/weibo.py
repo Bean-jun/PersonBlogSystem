@@ -1,3 +1,5 @@
+import uuid
+
 import requests
 from django.conf import settings
 from django.shortcuts import redirect
@@ -5,6 +7,7 @@ from django.views import View
 
 from apps.blog.models import UserInfo
 from apps.oauth.models import UserInfoWeiBo
+from apps.web.models import PricePolicy, Transaction
 
 
 class WeiboLogin(View):
@@ -53,6 +56,23 @@ class WeiboOAuthView(View):
                 UserInfoWeiBo.objects.create(user=user,
                                              access_token=data['access_token'],
                                              expires=data['expires_in'])
+
+                # 添加免费版权限
+                from datetime import datetime
+                # 获取产品价格策略
+                price_policy = PricePolicy.objects.filter(category=1).first()
+
+                # 添加权限交易记录
+                start_time = datetime.now()
+                Transaction.objects.create(status=2,
+                                           user=user,
+                                           price_policy=price_policy,
+                                           pay_price=0,
+                                           count=0,
+                                           start_time=start_time,
+                                           order=str(uuid.uuid4()),  # 产生随机字符串
+                                           create_time=start_time)
+
             else:
                 # 处理用户token
                 user_weibo = UserInfoWeiBo.objects.filter(user=user).first()

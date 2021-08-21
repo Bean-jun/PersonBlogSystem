@@ -1,7 +1,8 @@
 {% extends 'layout/manage.html' %}
-{% load dashboard %}
 {% load static %}
 {% load issues %}
+{% load dashboard %}
+{% load space %}
 {% block css %}
     <style>
         .table-right > tbody > tr > td.label-left {
@@ -149,7 +150,7 @@
                             <tr>
                                 <td class="label-left">项目空间 ：</td>
                                 <td> {% use_space request.tracer.project.use_space %}
-                                    / {% use_space request.tracer.price_policy.project_space %}
+                                    / {% use_space_policy request.tracer.price_policy.project_space %}
                                 </td>
                             </tr>
                             </tbody>

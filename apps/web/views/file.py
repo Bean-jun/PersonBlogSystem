@@ -117,17 +117,19 @@ def file_delete(request, project_id):
                                                            child=folder).order_by('-file_type')
 
                 for child in child_list:
-                    if child.file_type == 1:
+                    if child.file_type == 2:
                         # 表示文件夹
                         folder_list.append(child)
                     else:
                         # 表示是文件
                         total_size += child.file_size
                         key_list.append({"Key": child.key})
-            # 删除文件
-            delete_file_list(bucket=request.tracer.project.bucket,
-                             key_list=key_list,
-                             region=request.tracer.project.region)
+
+            if key_list:
+                # 删除文件
+                delete_file_list(bucket=request.tracer.project.bucket,
+                                 key_list=key_list,
+                                 region=request.tracer.project.region)
 
             # 释放空间
             request.tracer.project.use_space -= total_size
@@ -145,6 +147,7 @@ def cos_credentials(request, project_id):
     # 文件大小限制
     file_list = json.loads(request.body.decode('utf-8'))
 
+    # bug 他人创建的项目文件限制不能限制加入用户~在中间件中对price_policy进行重新封装
     # 单文件最大限制
     single_file_max = request.tracer.price_policy.single_file_space * 1024 * 1024
     # 项目总文件大小限制

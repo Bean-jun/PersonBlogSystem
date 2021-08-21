@@ -6,7 +6,7 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from django.db.models import Count
 
-from apps.web.models import Issues, ProjectUser
+from apps.web.models import Issues, ProjectUser, Project
 
 
 def dashboard(request, project_id):
@@ -48,11 +48,10 @@ def issues_chart(request, project_id):
     # 获取最近30天的问题创建数量
     res = Issues.objects.filter(project_id=project_id,
                                 create_datetime__gte=today - datetime.timedelta(days=30)
-                                ).extra(select={'ctime': "strftime('%%Y-%%m-%%d', web_issues.create_datetime)"}
+                                ).extra(select={'ctime': "DATE_FORMAT(web_issues.create_datetime,'%%Y-%%m-%%d')"}
                                         ).values('ctime').annotate(ct=Count('id'))
 
     for item in res:
         date_dict[item['ctime']][1] = item['ct']
-
 
     return JsonResponse({'code': 200, 'data': list(date_dict.values())})

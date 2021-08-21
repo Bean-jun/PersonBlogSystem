@@ -1,5 +1,6 @@
 {% extends 'layout/manage.html' %}
 {% load static %}
+{% load dashboard %}
 {% block css %}
     <style>
         .panel-default .panel-heading {
@@ -107,7 +108,7 @@
                             {% if item.file_type == 1 %}
                                 {#                                {{ item.file_size }}#}
                                 {#                                MB显示#}
-                                {% widthratio item.file_size 1024 1 %} KB
+                                {% use_space item.file_size %}
                             {% else %}
                                 -
                             {% endif %}
