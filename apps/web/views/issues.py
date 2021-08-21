@@ -408,11 +408,12 @@ def invite_join(request, code):
     if max_transaction.price_policy.category == 1:
         max_member = max_transaction.price_policy.project_member
     else:
-        if max_transaction.end_datetime < current_datetime:
-            free_object = PricePolicy.objects.filter(category=1).first()
-            max_member = free_object.project_member
-        else:
-            max_member = max_transaction.price_policy.project_member
+        # 暂时不做时效处理
+        # if max_transaction.end_time < current_datetime:
+        #     free_object = PricePolicy.objects.filter(category=1).first()
+        #     max_member = free_object.project_member
+        # else:
+        max_member = max_transaction.price_policy.project_member
 
     # 目前所有成员(创建者&参与者）
     current_member = ProjectUser.objects.filter(project=invite_object.project).count()

@@ -59,10 +59,10 @@ class LoginMiddleware(MiddlewareMixin):
             _object = Transaction.objects.filter(user=user, status=2).order_by('-id').first()
 
             # 判断权限已经过期
-            current_datetime = datetime.now()
-            if _object.end_time and _object.end_time < current_datetime:
-                # 账户权限过期
-                _object = Transaction.objects.filter(user=user, status=2, price_policy__category=1).first()
+            # current_datetime = datetime.now()
+            # if _object.end_time and _object.end_time < current_datetime:
+            #     # 账户权限过期
+            #     _object = Transaction.objects.filter(user=user, status=2, price_policy__category=1).first()
 
             request.tracer.price_policy = _object.price_policy
 
