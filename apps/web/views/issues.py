@@ -404,7 +404,7 @@ def invite_join(request, code):
         return render(request, 'web/invite_join.html', {'error': '已加入项目无需再加入'})
 
     # 是否已过期，如果已过期则使用免费额度
-    max_transaction = Transaction.objects.filter(user=invite_object.project.creator).order_by('-id').first()
+    max_transaction = Transaction.objects.filter(user=invite_object.project.create_user).order_by('-id').first()
     if max_transaction.price_policy.category == 1:
         max_member = max_transaction.price_policy.project_member
     else:
