@@ -88,7 +88,7 @@ class LoginMiddleware(MiddlewareMixin):
             request.tracer.project = project_obj
             return
 
-        project_user_obj = ProjectUser.objects.filter(user=request.tracer.user, id=project_id).first()
+        project_user_obj = ProjectUser.objects.filter(user=request.tracer.user, project_id=project_id).first()
         if project_user_obj:
             request.tracer.project = project_user_obj.project
             return
