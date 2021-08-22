@@ -72,6 +72,9 @@ class LoginMiddleware(MiddlewareMixin):
             if (request.user is None) or (request.user.email not in settings.ADMIN_ACCOUNT):
                 if not request.path.split('/')[1] in settings.VISITOR_WHITE_FUNCTION:
                     return redirect(reverse('blog:index'))
+                elif request.path.split('/')[1] == "service":
+                    # 未登录用户不允许进入服务
+                    return redirect(reverse('blog:login'))
         except Exception as e:
             raise Http404
 
