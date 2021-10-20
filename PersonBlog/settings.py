@@ -206,6 +206,8 @@ WEIBO_CLIENT_ID = "xxx"
 WEIBO_CLIENT_SECRET = "xxxx"
 WEIBO_CALL_BACK_URL = "/oauth/weibo/response"
 
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 # 配置日志
 LOGGING = {
     'version': 1,
