@@ -208,6 +208,9 @@ WEIBO_CALL_BACK_URL = "/oauth/weibo/response"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# 更新登录加密，此时间之前加密方式将使用自定义md5
+UPDATE_PASSWORD_DATE = '2021-12-19 16:21:40'
+
 # 配置日志
 LOGGING = {
     'version': 1,

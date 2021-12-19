@@ -1,4 +1,6 @@
+from datetime import datetime
 from django.conf import settings
+from django.contrib.auth.hashers import make_password, check_password
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
@@ -26,7 +28,7 @@ class RegisterSerializer(serializers.ModelSerializer):
             raise ValidationError("该账户已经注册")
 
         # 3 加密密码
-        attrs['password'] = md5(attrs['password'])
+        attrs['password'] = make_password(attrs['password'])
 
         # 4 确认管理员账号
         if attrs['email'] in settings.ADMIN_ACCOUNT:
@@ -45,10 +47,19 @@ class LoginSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         email = attrs.get('email')
-        password = md5(attrs.get('password'))
+        # password = md5(attrs.get('password'))
+        password = attrs.get('password')
 
-        user = blog_models.UserInfo.objects.filter(email=email, password=password).first()
+        user = blog_models.UserInfo.objects.filter(email=email).first()
 
+        update_time = datetime.strptime(settings.UPDATE_PASSWORD_DATE,'%Y-%m-%d %H:%M:%S')
+        if update_time > self._user.date_joined:
+            if user.password != md5(password):
+                user = None
+        else:
+            if not check_password(password, user.password):
+                user = None
+         
         if not user:
             raise ValidationError("账户或密码错误")
 
