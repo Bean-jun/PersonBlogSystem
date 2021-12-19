@@ -68,10 +68,35 @@ class LoginMiddleware(MiddlewareMixin):
 
     def process_view(self, request, view, args, kwargs):
         """非管理员或者未登录用户，只能看白名单页面"""
+
+        def visual_flag(request, user=None):
+            """访问状态处理"""
+            if not request.path.split('/')[1] in settings.VISITOR_WHITE_FUNCTION:
+                """白名单外的"""
+                return False
+            else:
+                if not user:
+                    """访客"""
+                    if request.path.split('/')[1] == "service":
+                        """访客不允许访问service"""
+                        return False
+                else:
+                    return True
+
         try:
-            if (request.user is None) or (request.user.email not in settings.ADMIN_ACCOUNT):
-                if not request.path.split('/')[1] in settings.VISITOR_WHITE_FUNCTION:
-                    return redirect(reverse('blog:index'))
+            if request.user is None or request.tracer.user is None:
+                # 未登录用户
+                if visual_flag(request, request.user) is False:
+                    raise Exception("访客访问页面不存在")
+                else:
+                    return
+            elif request.user.email not in settings.ADMIN_ACCOUNT:
+                # 登录普通用户
+                if visual_flag(request, request.user) is False:
+                    raise Exception("用户访问页面不存在")
+            elif request.user.email in settings.ADMIN_ACCOUNT:
+                # 登录管理员用户
+                pass
         except Exception as e:
             raise Http404
 

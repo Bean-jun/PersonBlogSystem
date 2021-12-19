@@ -1,6 +1,6 @@
 import time
 import uuid
-
+from datetime import datetime
 from django.conf import settings
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
@@ -102,6 +102,8 @@ class ModifyPassword(View):
 
             # 修改密码
             user.password = new_pwd
+            # 更新加入时间
+            user.date_joined = datetime.now()
             user.save()
 
             # 清理账户，重新登录
@@ -126,10 +128,11 @@ class LoginView(View):
 
         # 校验数据--邮箱存在问题--密码的一致性
         if form.is_valid():
-            email = form.cleaned_data['email']
-            password = form.cleaned_data['password']
+            # email = form.cleaned_data['email']
+            # password = form.cleaned_data['password']
 
-            user = UserInfo.objects.filter(email=email, password=password).first()
+            # user  = UserInfo.objects.filter(email=email, password=password).first()
+            user = form.cleaned_data["_user"]
 
             if user:
                 # 用户登录成功，做session设置
